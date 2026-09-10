@@ -17,11 +17,10 @@ class ShopState {
 
   List<SeedProduct> get filteredProducts {
     return products.where((p) {
-      final matchesCategory = selectedCategory == 'Todos los Productos' || p.category == selectedCategory;
+      final matchesCategory = selectedCategory == 'Todas' || p.category == selectedCategory;
       final matchesQuery = searchQuery.isEmpty ||
           p.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
-          p.scientificName.toLowerCase().contains(searchQuery.toLowerCase()) ||
-          p.lotCode.toLowerCase().contains(searchQuery.toLowerCase());
+          p.providerName.toLowerCase().contains(searchQuery.toLowerCase());
       return matchesCategory && matchesQuery;
     }).toList();
   }
@@ -46,7 +45,7 @@ class ShopController extends StateNotifier<ShopState> {
       : super(
           ShopState(
             products: repository.getProducts(),
-            selectedCategory: 'Todos los Productos',
+            selectedCategory: 'Todas',
           ),
         );
 

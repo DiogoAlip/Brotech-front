@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_typography.dart';
 import '../controllers/farm_controller.dart';
 import '../widgets/wizard/wizard_crop_step.dart';
 import '../widgets/wizard/wizard_date_step.dart';
 import '../widgets/wizard/wizard_soil_step.dart';
+import '../widgets/wizard/wizard_size_step.dart';
 
 class FarmWizardView extends ConsumerStatefulWidget {
   const FarmWizardView({super.key});
@@ -14,26 +16,13 @@ class FarmWizardView extends ConsumerStatefulWidget {
 }
 
 class _FarmWizardViewState extends ConsumerState<FarmWizardView> {
-  late PageController _pageController;
-
-  @override
-  void initState() {
-    super.initState();
-    final initialStep = ref.read(farmControllerProvider).currentWizardStep;
-    _pageController = PageController(initialPage: initialStep);
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
+  final PageController _pageController = PageController();
 
   void _nextStep() {
     final state = ref.read(farmControllerProvider);
     final controller = ref.read(farmControllerProvider.notifier);
-    
-    if (state.currentWizardStep < 2) {
+
+    if (state.currentWizardStep < 3) {
       final nextStep = state.currentWizardStep + 1;
       controller.setWizardStep(nextStep);
       _pageController.animateToPage(
@@ -42,15 +31,16 @@ class _FarmWizardViewState extends ConsumerState<FarmWizardView> {
         curve: Curves.easeInOut,
       );
     } else {
-      // Finish wizard and go to reward screen (step 3)
-      controller.setWizardStep(3);
+      controller.completeRegistration();
+      // Despues de completar, seteamos al currentWizardStep 4 para ver la recompensa
+      controller.setWizardStep(4);
     }
   }
 
-  void _prevStep() {
+  void _previousStep() {
     final state = ref.read(farmControllerProvider);
     final controller = ref.read(farmControllerProvider.notifier);
-    
+
     if (state.currentWizardStep > 0) {
       final prevStep = state.currentWizardStep - 1;
       controller.setWizardStep(prevStep);
@@ -65,15 +55,6 @@ class _FarmWizardViewState extends ConsumerState<FarmWizardView> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(farmControllerProvider);
-    
-    // Ensure page controller is in sync if state changed externally
-    if (_pageController.hasClients && _pageController.page?.round() != state.currentWizardStep && state.currentWizardStep < 3) {
-      _pageController.animateToPage(
-        state.currentWizardStep,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
 
     return Scaffold(
       backgroundColor: AppColors.surface,
@@ -83,20 +64,21 @@ class _FarmWizardViewState extends ConsumerState<FarmWizardView> {
         leading: state.currentWizardStep > 0
             ? IconButton(
                 icon: const Icon(Icons.arrow_back, color: AppColors.onSurface),
-                onPressed: _prevStep,
+                onPressed: _previousStep,
               )
             : null,
         title: Row(
           mainAxisSize: MainAxisSize.min,
-          children: List.generate(3, (index) {
-            final isActive = index <= state.currentWizardStep;
+          children: List.generate(4, (index) {
             return Container(
               margin: const EdgeInsets.symmetric(horizontal: 4),
-              height: 8,
-              width: 32,
+              width: 24,
+              height: 4,
               decoration: BoxDecoration(
-                color: isActive ? AppColors.primary : AppColors.surfaceContainerHigh,
-                borderRadius: BorderRadius.circular(4),
+                color: index <= state.currentWizardStep
+                    ? AppColors.primary
+                    : AppColors.surfaceContainerHigh,
+                borderRadius: BorderRadius.circular(2),
               ),
             );
           }),
@@ -105,9 +87,10 @@ class _FarmWizardViewState extends ConsumerState<FarmWizardView> {
       ),
       body: PageView(
         controller: _pageController,
-        physics: const NeverScrollableScrollPhysics(), // Disable swipe, force buttons
+        physics: const NeverScrollableScrollPhysics(), // Desactiva swipe manual
         children: [
           WizardCropStep(onNext: _nextStep),
+          WizardSizeStep(onNext: _nextStep),
           WizardDateStep(onNext: _nextStep),
           WizardSoilStep(onNext: _nextStep),
         ],

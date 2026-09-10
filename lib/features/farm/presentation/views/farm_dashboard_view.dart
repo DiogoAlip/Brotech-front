@@ -13,6 +13,19 @@ class FarmDashboardView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(farmControllerProvider.notifier);
+    final state = ref.watch(farmControllerProvider);
+
+    String getCropName(String id) {
+      final names = {
+        'maiz': 'Maíz',
+        'papa': 'Papa',
+        'frijol': 'Frijol',
+        'tomate': 'Tomate',
+        'cacao': 'Cacao',
+        'arroz': 'Arroz',
+      };
+      return names[id] ?? 'Cultivo';
+    }
 
     return Scaffold(
       backgroundColor: AppColors.surface,
@@ -33,7 +46,7 @@ class FarmDashboardView extends ConsumerWidget {
               // Delete crop and reset flow for demo
               controller.resetFlow();
             },
-            tooltip: 'Borrar cultivo (Demo)',
+            tooltip: 'Borrar todo (Demo)',
           ),
         ],
       ),
@@ -43,31 +56,89 @@ class FarmDashboardView extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const DashboardWeatherAlert(),
-            const SizedBox(height: 24),
-            
-            Text(
-              'Seguimiento',
-              style: AppTypography.headlineSm.copyWith(
-                fontWeight: FontWeight.w800,
-                color: AppColors.onSurface,
-              ),
-            ),
-            const SizedBox(height: 16),
-            const DashboardTimeline(),
             const SizedBox(height: 32),
             
-            Text(
-              'Tareas Recomendadas',
-              style: AppTypography.headlineSm.copyWith(
-                fontWeight: FontWeight.w800,
-                color: AppColors.onSurface,
+            ...state.parcels.map((parcel) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 40.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.eco, color: AppColors.primary),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Parcela de ${getCropName(parcel.crop)}',
+                          style: AppTypography.headlineSm.copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.onSurface,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${parcel.hectares} Hectáreas - Plantada el ${parcel.date.day}/${parcel.date.month}',
+                      style: AppTypography.bodyLg.copyWith(
+                        color: AppColors.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    
+                    Text(
+                      'Seguimiento',
+                      style: AppTypography.labelLg.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const DashboardTimeline(),
+                    const SizedBox(height: 32),
+                    
+                    Text(
+                      'Tareas Recomendadas',
+                      style: AppTypography.labelLg.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const DashboardTaskCard(),
+                  ],
+                ),
+              );
+            }),
+            
+            SizedBox(
+              width: double.infinity,
+              height: 56,
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  controller.startNewParcel();
+                },
+                icon: const Icon(Icons.add),
+                label: Text(
+                  'Añadir otra parcela',
+                  style: AppTypography.labelLg.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  side: const BorderSide(color: AppColors.primary, width: 2),
+                  foregroundColor: AppColors.primary,
+                ),
               ),
             ),
-            const SizedBox(height: 16),
-            const DashboardTaskCard(),
+            const SizedBox(height: 32),
           ],
         ),
       ),
     );
   }
 }
+

@@ -12,11 +12,11 @@ class FarmScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(farmControllerProvider);
 
-    if (state.hasRegisteredCrop) {
+    if (state.parcels.isNotEmpty && !state.isCreatingNewParcel) {
       return const FarmDashboardView();
     }
 
-    if (state.currentWizardStep == 3) {
+    if (state.currentWizardStep == 4) { // reward is now step 4
       return const FarmRewardView();
     }
 
