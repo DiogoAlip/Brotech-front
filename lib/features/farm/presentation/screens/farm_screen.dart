@@ -36,8 +36,11 @@ class FarmScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Top Catastral Badge Row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 8,
+              runSpacing: 6,
               children: [
                 Text(
                   'REGISTRO CATASTRAL • LOTE SEC-2025',
@@ -104,11 +107,14 @@ class FarmScreen extends ConsumerWidget {
                         child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                       )
                     : const Icon(Icons.save, size: 20),
-                label: Text(
-                  state.isSaving ? 'Registrando...' : 'Registrar Configuración de Parcela',
-                  style: AppTypography.labelLg.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
+                label: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    state.isSaving ? 'Registrando...' : 'Registrar Configuración de Parcela',
+                    style: AppTypography.labelLg.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),

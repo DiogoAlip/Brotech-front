@@ -30,27 +30,32 @@ class ParcelCartographyCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'CARTOGRAFÍA VISUAL CATASTRAL',
-                      style: AppTypography.labelSm.copyWith(
-                        color: AppColors.secondary,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.8,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'CARTOGRAFÍA VISUAL CATASTRAL',
+                        style: AppTypography.labelSm.copyWith(
+                          color: AppColors.secondary,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.8,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      'Parcela 4 - Zona Activa de Siembra',
-                      style: AppTypography.headlineSm.copyWith(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
+                      const SizedBox(height: 2),
+                      Text(
+                        'Parcela 4 - Zona Activa de Siembra',
+                        style: AppTypography.headlineSm.copyWith(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
+                const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
@@ -59,6 +64,7 @@ class ParcelCartographyCard extends StatelessWidget {
                     border: Border.all(color: AppColors.primary.withValues(alpha: 0.1)),
                   ),
                   child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       const Icon(Icons.satellite_alt, size: 15, color: AppColors.secondary),
                       const SizedBox(width: 4),
@@ -93,89 +99,102 @@ class ParcelCartographyCard extends StatelessWidget {
                 ),
               ),
 
-              // Overlay: Parcel Telemetry Pill (Top-Left)
+              // Overlays: Parcel Telemetry Pill & Soil Fertility Badge
               Positioned(
-                top: 12,
-                left: 12,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryContainer.withValues(alpha: 0.92),
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: AppColors.inversePrimary.withValues(alpha: 0.3)),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: const BoxDecoration(
-                          color: AppColors.secondaryContainer,
-                          shape: BoxShape.circle,
+                top: 10,
+                left: 10,
+                right: 10,
+                child: Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryContainer.withValues(alpha: 0.92),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: AppColors.inversePrimary.withValues(alpha: 0.3)),
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 8,
+                              height: 8,
+                              decoration: const BoxDecoration(
+                                color: AppColors.secondaryContainer,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'ÁREA TOTAL DEL LOTE',
+                                  style: AppTypography.labelSm.copyWith(
+                                    fontSize: 8.5,
+                                    color: AppColors.onPrimaryContainer,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                Text(
+                                  '140 Ha Gestionadas',
+                                  style: AppTypography.labelMd.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'ÁREA TOTAL DEL LOTE',
-                            style: AppTypography.labelSm.copyWith(
-                              fontSize: 9,
-                              color: AppColors.onPrimaryContainer,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          Text(
-                            '140 Hectáreas Gestionadas',
-                            style: AppTypography.labelMd.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ],
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceContainerLowest.withValues(alpha: 0.95),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: AppColors.primary.withValues(alpha: 0.15)),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Overlay: Soil Fertility Badge (Top-Right)
-              Positioned(
-                top: 12,
-                right: 12,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: AppColors.surfaceContainerLowest.withValues(alpha: 0.95),
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.15)),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.eco, size: 16, color: AppColors.secondary),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Fertilidad: 92/100',
-                        style: AppTypography.labelSm.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w700,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.eco, size: 15, color: AppColors.secondary),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Fertilidad: 92/100',
+                              style: AppTypography.labelSm.copyWith(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
 
               // Overlay: Furrow Sector Marker (Bottom)
               Positioned(
-                bottom: 12,
-                left: 12,
-                right: 12,
+                bottom: 10,
+                left: 10,
+                right: 10,
                 child: Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: AppColors.surfaceContainerLowest.withValues(alpha: 0.95),
                     borderRadius: BorderRadius.circular(6),
@@ -190,62 +209,72 @@ class ParcelCartographyCard extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: 34,
-                            height: 34,
-                            decoration: BoxDecoration(
-                              color: AppColors.secondaryContainer.withValues(alpha: 0.5),
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border.all(color: AppColors.secondary.withValues(alpha: 0.3)),
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              'P4',
-                              style: AppTypography.labelMd.copyWith(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.w800,
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: AppColors.secondaryContainer.withValues(alpha: 0.5),
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border.all(color: AppColors.secondary.withValues(alpha: 0.3)),
                               ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'SECTOR DE TRABAJO ACTUAL',
-                                style: AppTypography.labelSm.copyWith(
-                                  fontSize: 9,
-                                  color: AppColors.secondary,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              Text(
-                                'Bloques de Surcos 12 al 28',
-                                style: AppTypography.bodyMd.copyWith(
-                                  fontWeight: FontWeight.w700,
+                              alignment: Alignment.center,
+                              child: Text(
+                                'P4',
+                                style: AppTypography.labelMd.copyWith(
                                   color: AppColors.primary,
+                                  fontWeight: FontWeight.w800,
                                 ),
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    'SECTOR DE TRABAJO ACTUAL',
+                                    style: AppTypography.labelSm.copyWith(
+                                      fontSize: 8.5,
+                                      color: AppColors.secondary,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    'Bloques de Surcos 12 al 28',
+                                    style: AppTypography.bodySm.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.primary,
+                                      fontSize: 12,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                      const SizedBox(width: 8),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
                             'TEMP. SUELO',
                             style: AppTypography.labelSm.copyWith(
-                              fontSize: 9,
+                              fontSize: 8.5,
                               color: AppColors.onSurfaceVariant,
                             ),
                           ),
                           Text(
                             '18.4°C',
                             style: AppTypography.numericMetric.copyWith(
-                              fontSize: 15,
+                              fontSize: 14,
                               color: AppColors.primary,
                             ),
                           ),
@@ -259,8 +288,8 @@ class ParcelCartographyCard extends StatelessWidget {
           ),
 
           // Analytical Specifications Sheet
-          Padding(
-            padding: const EdgeInsets.all(16),
+          const Padding(
+            padding: EdgeInsets.all(16),
             child: Column(
               children: [
                 _SpecRow(
@@ -268,13 +297,13 @@ class ParcelCartographyCard extends StatelessWidget {
                   value: '2.8% (Curva de Nivel Aterrazada)',
                   valueColor: AppColors.primary,
                 ),
-                const Divider(height: 16, color: Color(0x1A114036)),
+                Divider(height: 16, color: Color(0x1A114036)),
                 _SpecRow(
                   label: 'Infraestructura de Riego:',
                   value: 'Goteo Subterráneo Automatizado',
                   valueColor: AppColors.secondary,
                 ),
-                const Divider(height: 16, color: Color(0x1A114036)),
+                Divider(height: 16, color: Color(0x1A114036)),
                 _SpecRow(
                   label: 'Materia Orgánica del Suelo (SOM):',
                   value: '4.6% (Humus Rico)',
@@ -305,15 +334,21 @@ class _SpecRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: AppTypography.bodySm.copyWith(color: AppColors.onSurfaceVariant),
+        Expanded(
+          child: Text(
+            label,
+            style: AppTypography.bodySm.copyWith(color: AppColors.onSurfaceVariant),
+          ),
         ),
-        Text(
-          value,
-          style: AppTypography.bodySm.copyWith(
-            fontWeight: FontWeight.w700,
-            color: valueColor,
+        const SizedBox(width: 8),
+        Flexible(
+          child: Text(
+            value,
+            textAlign: TextAlign.end,
+            style: AppTypography.bodySm.copyWith(
+              fontWeight: FontWeight.w700,
+              color: valueColor,
+            ),
           ),
         ),
       ],

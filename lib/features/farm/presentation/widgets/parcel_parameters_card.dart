@@ -30,17 +30,24 @@ class ParcelParametersCard extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
+            runSpacing: 6,
             children: [
               Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(Icons.tune, color: AppColors.secondary, size: 20),
                   const SizedBox(width: 8),
-                  Text(
-                    'Parámetros de Parcela',
-                    style: AppTypography.headlineSm.copyWith(
-                      fontWeight: FontWeight.w700,
+                  Flexible(
+                    child: Text(
+                      'Parámetros de Parcela',
+                      style: AppTypography.headlineSm.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
@@ -66,20 +73,23 @@ class ParcelParametersCard extends ConsumerWidget {
           const SizedBox(height: 16),
 
           // Input 1: Land Area / Hectares
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
+            runSpacing: 4,
             children: [
-              Row(
-                children: [
-                  Text(
-                    'Superficie Total de Tierra',
-                    style: AppTypography.labelMd.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.onSurface,
-                    ),
+              Text.rich(
+                TextSpan(
+                  text: 'Superficie Total de Tierra',
+                  style: AppTypography.labelMd.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.onSurface,
                   ),
-                  const Text(' *', style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
-                ],
+                  children: const [
+                    TextSpan(text: ' *', style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
+                  ],
+                ),
               ),
               Text(
                 'Lote Máx: 250 Ha',
@@ -127,7 +137,7 @@ class ParcelParametersCard extends ConsumerWidget {
                     border: Border.all(color: AppColors.primary.withValues(alpha: 0.1)),
                   ),
                   child: Text(
-                    'Ha (Hectáreas)',
+                    'Ha',
                     style: AppTypography.labelMd.copyWith(
                       color: AppColors.primary,
                       fontWeight: FontWeight.w700,
@@ -138,8 +148,11 @@ class ParcelParametersCard extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
+            runSpacing: 4,
             children: [
               Text.rich(
                 TextSpan(
@@ -168,17 +181,17 @@ class ParcelParametersCard extends ConsumerWidget {
           const SizedBox(height: 16),
 
           // Input 2: Type of Sowing
-          Row(
-            children: [
-              Text(
-                'Metodología de Siembra y Disposición',
-                style: AppTypography.labelMd.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.onSurface,
-                ),
+          Text.rich(
+            TextSpan(
+              text: 'Metodología de Siembra y Disposición',
+              style: AppTypography.labelMd.copyWith(
+                fontWeight: FontWeight.w600,
+                color: AppColors.onSurface,
               ),
-              const Text(' *', style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
-            ],
+              children: const [
+                TextSpan(text: ' *', style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
+              ],
+            ),
           ),
           const SizedBox(height: 8),
           Container(
@@ -250,24 +263,28 @@ class ParcelParametersCard extends ConsumerWidget {
           const SizedBox(height: 16),
 
           // Input 3: Kind of Seeds Selection
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
+            runSpacing: 4,
             children: [
-              Row(
-                children: [
-                  Text(
-                    'Tipo de Semillas y Lote de Cultivar',
-                    style: AppTypography.labelMd.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.onSurface,
-                    ),
+              Text.rich(
+                TextSpan(
+                  text: 'Tipo de Semillas y Lote de Cultivar',
+                  style: AppTypography.labelMd.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.onSurface,
                   ),
-                  const Text(' *', style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
-                ],
+                  children: const [
+                    TextSpan(text: ' *', style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
+                  ],
+                ),
               ),
               InkWell(
                 onTap: () {},
                 child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     const Icon(Icons.search, size: 14, color: AppColors.secondary),
                     const SizedBox(width: 2),
@@ -341,21 +358,29 @@ class ParcelParametersCard extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 6,
+                  runSpacing: 6,
                   children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.biotech, color: AppColors.secondary, size: 18),
-                        const SizedBox(width: 6),
-                        Text(
-                          'Métricas del Cultivar Seleccionado',
-                          style: AppTypography.labelMd.copyWith(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.w700,
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.biotech, color: AppColors.secondary, size: 18),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Métricas del Cultivar Seleccionado',
+                            style: AppTypography.labelMd.copyWith(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -376,12 +401,12 @@ class ParcelParametersCard extends ConsumerWidget {
                 const SizedBox(height: 10),
                 const Divider(height: 1, color: Color(0x1A114036)),
                 const SizedBox(height: 10),
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _MetricColumn(label: 'GERMINACIÓN', value: '98.4%'),
-                    _MetricColumn(label: 'pH OBJETIVO', value: '6.2 - 6.8'),
-                    _MetricColumn(label: 'DENSIDAD', value: '28k/Ha'),
+                    Expanded(child: _MetricColumn(label: 'GERMINACIÓN', value: '98.4%')),
+                    Expanded(child: _MetricColumn(label: 'pH OBJETIVO', value: '6.2 - 6.8')),
+                    Expanded(child: _MetricColumn(label: 'DENSIDAD', value: '28k/Ha')),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -410,20 +435,27 @@ class _MetricColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          label,
-          style: AppTypography.labelSm.copyWith(
-            color: AppColors.onSurfaceVariant,
-            fontSize: 9,
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            label,
+            style: AppTypography.labelSm.copyWith(
+              color: AppColors.onSurfaceVariant,
+              fontSize: 9,
+            ),
           ),
         ),
         const SizedBox(height: 2),
-        Text(
-          value,
-          style: AppTypography.numericMetric.copyWith(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            value,
+            style: AppTypography.numericMetric.copyWith(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
       ],

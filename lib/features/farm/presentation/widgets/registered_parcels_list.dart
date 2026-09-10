@@ -15,17 +15,24 @@ class RegisteredParcelsList extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 8,
+          runSpacing: 4,
           children: [
             Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 const Icon(Icons.inventory_2, color: AppColors.primary, size: 18),
                 const SizedBox(width: 8),
-                Text(
-                  'Parcelas Registradas',
-                  style: AppTypography.headlineSm.copyWith(
-                    fontWeight: FontWeight.w700,
+                Flexible(
+                  child: Text(
+                    'Parcelas Registradas',
+                    style: AppTypography.headlineSm.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -107,7 +114,10 @@ class _ParcelItemCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 8,
+                  runSpacing: 4,
                   children: [
                     Text(
                       parcel.name,
@@ -116,7 +126,6 @@ class _ParcelItemCard extends StatelessWidget {
                         color: AppColors.primary,
                       ),
                     ),
-                    const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
@@ -140,6 +149,8 @@ class _ParcelItemCard extends StatelessWidget {
                   style: AppTypography.bodySm.copyWith(
                     color: AppColors.onSurfaceVariant,
                   ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
                 ),
               ],
             ),

@@ -46,10 +46,14 @@ class ShopScreen extends ConsumerWidget {
               ),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 8,
+                    runSpacing: 4,
                     children: [
                       Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           const Icon(Icons.location_on, color: AppColors.secondary, size: 16),
                           const SizedBox(width: 4),
@@ -83,18 +87,24 @@ class ShopScreen extends ConsumerWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Text(
-                            'Finca El Roble - Parcela 4',
-                            style: AppTypography.headlineSm.copyWith(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                'Finca El Roble - Parcela 4',
+                                style: AppTypography.headlineSm.copyWith(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                          ),
-                          const Icon(Icons.expand_more, size: 18, color: AppColors.primary),
-                        ],
+                            const Icon(Icons.expand_more, size: 18, color: AppColors.primary),
+                          ],
+                        ),
                       ),
+                      const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                         decoration: BoxDecoration(
@@ -179,7 +189,9 @@ class ShopScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 6,
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -188,23 +200,25 @@ class ShopScreen extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(4),
                           border: Border.all(color: AppColors.tertiaryFixedDim.withValues(alpha: 0.4)),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.calendar_month, size: 12, color: AppColors.tertiaryFixedDim),
-                            const SizedBox(width: 4),
-                            Text(
-                              'Temporada de Siembra Primavera 2025',
-                              style: AppTypography.labelSm.copyWith(
-                                color: AppColors.tertiaryFixedDim,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 9.5,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.calendar_month, size: 12, color: AppColors.tertiaryFixedDim),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Temporada de Siembra Primavera 2025',
+                                style: AppTypography.labelSm.copyWith(
+                                  color: AppColors.tertiaryFixedDim,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 9.5,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
@@ -241,29 +255,37 @@ class ShopScreen extends ConsumerWidget {
                   const SizedBox(height: 12),
                   const Divider(height: 1, color: Color(0x33FFFFFF)),
                   const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 8,
+                    runSpacing: 8,
                     children: [
-                      Row(
-                        children: [
-                          Text(
-                            '15% DTO',
-                            style: AppTypography.numericMetric.copyWith(
-                              color: AppColors.tertiaryFixedDim,
-                              fontWeight: FontWeight.w800,
-                              fontSize: 18,
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '15% DTO',
+                              style: AppTypography.numericMetric.copyWith(
+                                color: AppColors.tertiaryFixedDim,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 18,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            'LOTES CERTIFICADOS',
-                            style: AppTypography.labelSm.copyWith(
-                              color: AppColors.surfaceContainerHighest,
-                              fontSize: 9.5,
-                              fontWeight: FontWeight.w700,
+                            const SizedBox(width: 6),
+                            Text(
+                              'LOTES CERTIFICADOS',
+                              style: AppTypography.labelSm.copyWith(
+                                color: AppColors.surfaceContainerHighest,
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                       ElevatedButton.icon(
                         onPressed: () {},
@@ -283,8 +305,11 @@ class ShopScreen extends ConsumerWidget {
             const SizedBox(height: 18),
 
             // Biological Categories
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 8,
+              runSpacing: 4,
               children: [
                 Text(
                   'Categorías Biológicas',

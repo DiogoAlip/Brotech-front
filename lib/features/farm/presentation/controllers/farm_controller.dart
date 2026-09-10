@@ -41,12 +41,10 @@ class FarmState {
 }
 
 class FarmController extends StateNotifier<FarmState> {
-  final FarmRepository _repository;
-
-  FarmController(this._repository)
+  FarmController(FarmRepository repository)
       : super(
           FarmState(
-            parcels: _repository.getInitialParcels(),
+            parcels: repository.getInitialParcels(),
             currentHectares: 140.0,
             selectedSowingMethod: 'direct_precision',
             selectedSeedVariety: 'san_marzano',

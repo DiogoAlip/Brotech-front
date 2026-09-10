@@ -51,7 +51,10 @@ class SeedProductCard extends StatelessWidget {
               Positioned(
                 top: 8,
                 left: 8,
-                child: Row(
+                right: 8,
+                child: Wrap(
+                  spacing: 6,
+                  runSpacing: 4,
                   children: [
                     if (product.discountLabel != null) ...[
                       Container(
@@ -69,7 +72,6 @@ class SeedProductCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 6),
                     ],
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -126,6 +128,7 @@ class SeedProductCard extends StatelessWidget {
                         ],
                       ),
                     ),
+                    const SizedBox(width: 8),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
@@ -161,9 +164,9 @@ class SeedProductCard extends StatelessWidget {
                     border: Border.all(color: AppColors.primary.withValues(alpha: 0.1)),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           const Icon(Icons.verified, size: 14, color: AppColors.secondary),
                           const SizedBox(width: 4),
@@ -176,11 +179,16 @@ class SeedProductCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Text(
-                        product.treatment,
-                        style: AppTypography.labelSm.copyWith(
-                          color: AppColors.onSurfaceVariant,
-                          fontSize: 10,
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          product.treatment,
+                          textAlign: TextAlign.end,
+                          style: AppTypography.labelSm.copyWith(
+                            color: AppColors.onSurfaceVariant,
+                            fontSize: 10,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],

@@ -42,12 +42,10 @@ class ShopState {
 }
 
 class ShopController extends StateNotifier<ShopState> {
-  final ShopRepository _repository;
-
-  ShopController(this._repository)
+  ShopController(ShopRepository repository)
       : super(
           ShopState(
-            products: _repository.getProducts(),
+            products: repository.getProducts(),
             selectedCategory: 'Todos los Productos',
           ),
         );
