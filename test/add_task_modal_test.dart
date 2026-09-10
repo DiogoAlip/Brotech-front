@@ -5,9 +5,16 @@ import 'package:client/app.dart';
 import 'package:client/features/calendar/presentation/controllers/calendar_controller.dart';
 
 void main() {
-  testWidgets('Add Task Modal opens, configures priority, time, goal, title, subject and adds task to selected day',
+  testWidgets('Calendar displays weather indicators, has no Add Task modal/FAB, and updates weather upon day selection',
       (WidgetTester tester) async {
-    final testDate = DateTime(2025, 5, 20); // A day without pre-seeded tasks
+    tester.view.physicalSize = const Size(1080, 1920);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    final testDate = DateTime(2025, 5, 14);
 
     await tester.pumpWidget(
       ProviderScope(
@@ -19,58 +26,30 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // 1. Verify empty state for date without tasks
-    expect(find.text('Sin labores programadas'), findsOneWidget);
-    expect(find.text('Programar Labor'), findsOneWidget);
+    // 1. Verify tasks and Add Task modal/FAB are completely absent
+    expect(find.text('Agregar Tarea'), findsNothing);
+    expect(find.text('Sin labores programadas'), findsNothing);
+    expect(find.text('Agregar Nueva Labor'), findsNothing);
+    expect(find.byType(FloatingActionButton), findsNothing);
 
-    // 2. Open Add Task Modal via FAB
-    final addTaskBtn = find.text('Agregar Tarea');
-    await tester.tap(addTaskBtn);
+    // 2. Verify Weather Legend items
+    expect(find.text('Soleado'), findsWidgets);
+    expect(find.text('Lluvia'), findsWidgets);
+    expect(find.text('Riesgo Helada'), findsWidgets);
+    expect(find.text('Nublado'), findsWidgets);
+
+    // 3. Verify weather details for initial selected date (May 14)
+    expect(find.text('Miércoles, 14 de Mayo'), findsOneWidget);
+    expect(find.text('Pronóstico Agrometeorológico • Finca El Roble'), findsOneWidget);
+
+    // 4. Select another day on the grid (e.g. day 16)
+    final day16Finder = find.text('16').first;
+    await tester.ensureVisible(day16Finder);
+    await tester.tap(day16Finder);
     await tester.pumpAndSettle();
 
-    // 3. Verify modal is displayed with title and fields
-    expect(find.text('Agregar Nueva Labor'), findsOneWidget);
-    expect(find.text('Título de la Labor *'), findsOneWidget);
-    expect(find.text('Asunto / Descripción *'), findsOneWidget);
-    expect(find.text('Hora Programada *'), findsOneWidget);
-    expect(find.text('Prioridad *'), findsOneWidget);
-    expect(find.text('Configuración del Objetivo (Goal)'), findsOneWidget);
-
-    // 4. Configure Title & Subject using keys
-    final titleField = find.byKey(const Key('add_task_title_field'));
-    await tester.enterText(titleField, 'Fertirrigación Foliar Intensiva');
-    await tester.pumpAndSettle();
-
-    final subjectField = find.byKey(const Key('add_task_subject_field'));
-    await tester.enterText(subjectField, 'Aplicación de bioestimulante Sector 4');
-    await tester.pumpAndSettle();
-
-    // 5. Select Priority (Media)
-    final priorityMedia = find.byKey(const Key('add_task_priority_media'));
-    await tester.tap(priorityMedia);
-    await tester.pumpAndSettle();
-
-    // 6. Scroll and select Goal Kind (Fertirrigación)
-    final fertKindChip = find.byKey(const Key('add_task_goal_kind_fertirrigacion'));
-    await tester.ensureVisible(fertKindChip);
-    await tester.tap(fertKindChip);
-    await tester.pumpAndSettle();
-
-    // 7. Scroll and configure Amount field
-    final amountField = find.byKey(const Key('add_task_amount_field'));
-    await tester.ensureVisible(amountField);
-    await tester.enterText(amountField, '5.5 L/Ha');
-    await tester.pumpAndSettle();
-
-    // 8. Submit modal
-    final submitBtn = find.byKey(const Key('add_task_submit_btn'));
-    await tester.ensureVisible(submitBtn);
-    await tester.tap(submitBtn);
-    await tester.pumpAndSettle();
-
-    // 9. Verify task is added to selected day and empty state is replaced by task card
-    expect(find.text('Fertirrigación Foliar Intensiva'), findsOneWidget);
-    expect(find.textContaining('5.5 L/Ha'), findsWidgets);
-    expect(find.text('Media'), findsWidgets);
+    // 5. Verify the weather detail card updated to May 16
+    expect(find.text('Viernes, 16 de Mayo'), findsOneWidget);
+    expect(find.text('Lluvias Aisladas'), findsWidgets);
   });
 }

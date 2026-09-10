@@ -1,20 +1,24 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/calendar_repository.dart';
-import '../../domain/models/calendar_task.dart';
+import '../../domain/models/daily_weather.dart';
 
 class CalendarState {
   final DateTime selectedDate;
   final bool isMonthView;
   final bool isSelectingMonthYear;
   final int viewingYear;
-  final List<CalendarTask> tasks;
+  final DailyWeather selectedWeather;
+  final List<DailyWeather> upcomingWeather;
+  final bool isClimateAlertDismissed;
 
   const CalendarState({
     required this.selectedDate,
     required this.isMonthView,
     this.isSelectingMonthYear = false,
     required this.viewingYear,
-    required this.tasks,
+    required this.selectedWeather,
+    required this.upcomingWeather,
+    this.isClimateAlertDismissed = false,
   });
 
   CalendarState copyWith({
@@ -22,14 +26,19 @@ class CalendarState {
     bool? isMonthView,
     bool? isSelectingMonthYear,
     int? viewingYear,
-    List<CalendarTask>? tasks,
+    DailyWeather? selectedWeather,
+    List<DailyWeather>? upcomingWeather,
+    bool? isClimateAlertDismissed,
   }) {
     return CalendarState(
       selectedDate: selectedDate ?? this.selectedDate,
       isMonthView: isMonthView ?? this.isMonthView,
       isSelectingMonthYear: isSelectingMonthYear ?? this.isSelectingMonthYear,
       viewingYear: viewingYear ?? this.viewingYear,
-      tasks: tasks ?? this.tasks,
+      selectedWeather: selectedWeather ?? this.selectedWeather,
+      upcomingWeather: upcomingWeather ?? this.upcomingWeather,
+      isClimateAlertDismissed:
+          isClimateAlertDismissed ?? this.isClimateAlertDismissed,
     );
   }
 }
@@ -48,7 +57,9 @@ class CalendarController extends StateNotifier<CalendarState> {
       isMonthView: true,
       isSelectingMonthYear: false,
       viewingYear: today.year,
-      tasks: repo.getTasksForDate(today),
+      selectedWeather: repo.getWeatherForDate(today),
+      upcomingWeather: repo.getUpcomingForecast(today.add(const Duration(days: 1)), days: 7),
+      isClimateAlertDismissed: false,
     );
   }
 
@@ -56,38 +67,17 @@ class CalendarController extends StateNotifier<CalendarState> {
     state = state.copyWith(
       selectedDate: date,
       viewingYear: date.year,
-      tasks: _repository.getTasksForDate(date),
+      selectedWeather: _repository.getWeatherForDate(date),
+      upcomingWeather: _repository.getUpcomingForecast(date.add(const Duration(days: 1)), days: 7),
     );
   }
 
-  void addTask(CalendarTask task, [DateTime? targetDate]) {
-    final date = targetDate ?? state.selectedDate;
-    _repository.addTaskForDate(date, task);
-    state = state.copyWith(
-      tasks: _repository.getTasksForDate(state.selectedDate),
-    );
+  DailyWeather getWeatherForDate(DateTime date) {
+    return _repository.getWeatherForDate(date);
   }
 
-  void advanceTaskStatus(CalendarTask task, [DateTime? targetDate]) {
-    final date = targetDate ?? state.selectedDate;
-    final updatedTask = task.advanceStatus();
-    _repository.updateTaskForDate(date, updatedTask);
-    state = state.copyWith(
-      tasks: _repository.getTasksForDate(state.selectedDate),
-    );
-  }
-
-  void regressTaskStatus(CalendarTask task, [DateTime? targetDate]) {
-    final date = targetDate ?? state.selectedDate;
-    final updatedTask = task.regressStatus();
-    _repository.updateTaskForDate(date, updatedTask);
-    state = state.copyWith(
-      tasks: _repository.getTasksForDate(state.selectedDate),
-    );
-  }
-
-  bool hasTasksOnDate(DateTime date) {
-    return _repository.hasTasksOnDate(date);
+  bool hasFrostRiskOnDate(DateTime date) {
+    return _repository.hasFrostRiskOnDate(date);
   }
 
   void toggleView(bool isMonth) {
@@ -122,7 +112,8 @@ class CalendarController extends StateNotifier<CalendarState> {
       selectedDate: newDate,
       viewingYear: year,
       isSelectingMonthYear: false,
-      tasks: _repository.getTasksForDate(newDate),
+      selectedWeather: _repository.getWeatherForDate(newDate),
+      upcomingWeather: _repository.getUpcomingForecast(newDate.add(const Duration(days: 1)), days: 7),
     );
   }
 
@@ -137,7 +128,8 @@ class CalendarController extends StateNotifier<CalendarState> {
     state = state.copyWith(
       selectedDate: newDate,
       viewingYear: year,
-      tasks: _repository.getTasksForDate(newDate),
+      selectedWeather: _repository.getWeatherForDate(newDate),
+      upcomingWeather: _repository.getUpcomingForecast(newDate.add(const Duration(days: 1)), days: 7),
     );
   }
 
@@ -187,6 +179,14 @@ class CalendarController extends StateNotifier<CalendarState> {
     if (state.isSelectingMonthYear) {
       state = state.copyWith(isSelectingMonthYear: false);
     }
+  }
+
+  void dismissClimateAlert() {
+    state = state.copyWith(isClimateAlertDismissed: true);
+  }
+
+  void showClimateAlert() {
+    state = state.copyWith(isClimateAlertDismissed: false);
   }
 }
 

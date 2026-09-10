@@ -12,7 +12,7 @@ final GlobalKey<NavigatorState> _rootNavigatorKey =
 
 final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: '/finca',
+  initialLocation: '/calendario',
   routes: [
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {

@@ -4,7 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:client/app.dart';
 
 void main() {
-  testWidgets('Brotec app renders with header, active calendar route, and 5 destinations', (WidgetTester tester) async {
+  testWidgets('Brotec app renders with header, active weather calendar route, and 5 destinations', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 1920);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
     await tester.pumpWidget(
       const ProviderScope(
         child: BroTechApp(),
@@ -19,9 +26,12 @@ void main() {
     // Verify 5 bottom navigation destinations
     expect(find.text('Finca'), findsOneWidget);
     expect(find.text('Calendario'), findsOneWidget);
-    expect(find.text('Chatbot'), findsOneWidget);
+    expect(find.text('Consultas'), findsOneWidget);
     expect(find.text('Tienda'), findsOneWidget);
     expect(find.text('Perfil'), findsOneWidget);
+
+    // Verify Top Climate Notification
+    expect(find.text('Heladas y cambios climáticos'), findsOneWidget);
 
     // Verify Calendar view elements for current date
     final now = DateTime.now();
@@ -37,6 +47,12 @@ void main() {
 
     expect(find.text(expectedMonthYear), findsOneWidget);
     expect(find.text(expectedDayHeader), findsOneWidget);
-    expect(find.text('Agregar Tarea'), findsOneWidget);
+
+    // Verify Weather Outlook for other dates
+    expect(find.text('Pronóstico de Otras Fechas'), findsOneWidget);
+
+    // Verify Tasks and Add Task modal button are removed
+    expect(find.text('Agregar Tarea'), findsNothing);
+    expect(find.text('Sin labores programadas'), findsNothing);
   });
 }

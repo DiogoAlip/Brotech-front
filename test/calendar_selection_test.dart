@@ -7,6 +7,13 @@ import 'package:client/features/calendar/presentation/controllers/calendar_contr
 void main() {
   testWidgets('Calendar starts with actual current date by default',
       (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 1920);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
     await tester.pumpWidget(
       const ProviderScope(
         child: BroTechApp(),
@@ -32,6 +39,13 @@ void main() {
 
   testWidgets('Calendar allows navigating months, opening month/year selector, and selecting different months/years',
       (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 1920);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -74,7 +88,9 @@ void main() {
     expect(find.text('2025'), findsWidgets);
 
     // 5. Select October
-    await tester.tap(find.text('Oct'));
+    final octFinder = find.text('Oct');
+    await tester.ensureVisible(octFinder);
+    await tester.tap(octFinder);
     await tester.pumpAndSettle();
 
     // Returns to day grid and displays Octubre 2025

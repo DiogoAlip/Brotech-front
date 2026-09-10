@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../domain/models/daily_weather.dart';
 import '../controllers/calendar_controller.dart';
 
 const List<String> kSpanishMonthNames = [
@@ -240,18 +241,18 @@ class CalendarControlCard extends ConsumerWidget {
               onClose: () => controller.toggleMonthYearSelector(false),
             )
           else ...[
-            // Activity Tag Legend
+            // Agrometeorological Legend
             const SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  _LegendItem(color: AppColors.tertiaryFixedDim, label: 'Siembra'),
-                  SizedBox(width: 12),
-                  _LegendItem(color: AppColors.secondary, label: 'Fertirrigación'),
-                  SizedBox(width: 12),
-                  _LegendItem(color: AppColors.primaryContainer, label: 'Control de Calidad'),
-                  SizedBox(width: 12),
-                  _LegendItem(color: Color(0xFF59DCB5), label: 'Sensor de Suelo'),
+                  _LegendItem(color: Color(0xFFF57F17), icon: Icons.wb_sunny_rounded, label: 'Soleado'),
+                  SizedBox(width: 10),
+                  _LegendItem(color: Color(0xFF1976D2), icon: Icons.water_drop, label: 'Lluvia'),
+                  SizedBox(width: 10),
+                  _LegendItem(color: Color(0xFF0288D1), icon: Icons.ac_unit, label: 'Riesgo Helada'),
+                  SizedBox(width: 10),
+                  _LegendItem(color: Color(0xFF78909C), icon: Icons.cloud, label: 'Nublado'),
                 ],
               ),
             ),
@@ -276,13 +277,13 @@ class CalendarControlCard extends ConsumerWidget {
             if (state.isMonthView)
               _DynamicMonthGrid(
                 selectedDate: state.selectedDate,
-                hasTasksOnDate: (date) => controller.hasTasksOnDate(date),
+                getWeatherOnDate: (date) => controller.getWeatherForDate(date),
                 onDateSelected: (date) => controller.selectDate(date),
               )
             else
               _WeekDaysRow(
                 selectedDate: state.selectedDate,
-                hasTasksOnDate: (date) => controller.hasTasksOnDate(date),
+                getWeatherOnDate: (date) => controller.getWeatherForDate(date),
                 onDateSelected: (date) => controller.selectDate(date),
               ),
           ],
@@ -476,15 +477,15 @@ class _MonthYearSelectorView extends StatelessWidget {
   }
 }
 
-/// Dynamic Month Grid calculating correct weekday offsets, previous/next month days, and tasks
+/// Dynamic Month Grid displaying agrometeorological weather indicators for each cell
 class _DynamicMonthGrid extends StatelessWidget {
   final DateTime selectedDate;
-  final bool Function(DateTime date) hasTasksOnDate;
+  final DailyWeather Function(DateTime date) getWeatherOnDate;
   final ValueChanged<DateTime> onDateSelected;
 
   const _DynamicMonthGrid({
     required this.selectedDate,
-    required this.hasTasksOnDate,
+    required this.getWeatherOnDate,
     required this.onDateSelected,
   });
 
@@ -507,7 +508,7 @@ class _DynamicMonthGrid extends StatelessWidget {
       itemCount: totalCells,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 7,
-        childAspectRatio: 1.0,
+        childAspectRatio: 0.9,
       ),
       itemBuilder: (context, index) {
         final int dayNumber;
@@ -554,6 +555,8 @@ class _DynamicMonthGrid extends StatelessWidget {
           );
         }
 
+        final weather = getWeatherOnDate(cellDate);
+
         return InkWell(
           onTap: () => onDateSelected(cellDate),
           borderRadius: BorderRadius.circular(20),
@@ -561,8 +564,8 @@ class _DynamicMonthGrid extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 28,
-                height: 28,
+                width: 24,
+                height: 24,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: isSelected ? AppColors.secondary : Colors.transparent,
@@ -580,38 +583,18 @@ class _DynamicMonthGrid extends StatelessWidget {
                 child: Text(
                   '$dayNumber',
                   style: AppTypography.numericMetric.copyWith(
-                    fontSize: 13,
+                    fontSize: 11,
                     color: isSelected ? Colors.white : AppColors.onSurface,
                     fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                   ),
                 ),
               ),
-              const SizedBox(height: 2),
-              // Activity Dots
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (hasTasksOnDate(cellDate)) ...[
-                    Container(
-                      width: 4,
-                      height: 4,
-                      margin: const EdgeInsets.symmetric(horizontal: 1),
-                      decoration: const BoxDecoration(
-                        color: AppColors.secondary,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    Container(
-                      width: 4,
-                      height: 4,
-                      margin: const EdgeInsets.symmetric(horizontal: 1),
-                      decoration: const BoxDecoration(
-                        color: AppColors.tertiaryFixedDim,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ],
-                ],
+              const SizedBox(height: 1),
+              // Weather Condition Icon / Indicator
+              Icon(
+                weather.weatherIcon,
+                size: 10,
+                color: weather.indicatorColor,
               ),
             ],
           ),
@@ -624,12 +607,12 @@ class _DynamicMonthGrid extends StatelessWidget {
 /// Week Days Row displayed when Week View is toggled
 class _WeekDaysRow extends StatelessWidget {
   final DateTime selectedDate;
-  final bool Function(DateTime date) hasTasksOnDate;
+  final DailyWeather Function(DateTime date) getWeatherOnDate;
   final ValueChanged<DateTime> onDateSelected;
 
   const _WeekDaysRow({
     required this.selectedDate,
-    required this.hasTasksOnDate,
+    required this.getWeatherOnDate,
     required this.onDateSelected,
   });
 
@@ -644,13 +627,15 @@ class _WeekDaysRow extends StatelessWidget {
       itemCount: 7,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 7,
-        childAspectRatio: 1.0,
+        childAspectRatio: 0.9,
       ),
       itemBuilder: (context, index) {
         final cellDate = monday.add(Duration(days: index));
         final isSelected = cellDate.year == selectedDate.year &&
             cellDate.month == selectedDate.month &&
             cellDate.day == selectedDate.day;
+
+        final weather = getWeatherOnDate(cellDate);
 
         return InkWell(
           onTap: () => onDateSelected(cellDate),
@@ -659,8 +644,8 @@ class _WeekDaysRow extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 28,
-                height: 28,
+                width: 24,
+                height: 24,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: isSelected ? AppColors.secondary : Colors.transparent,
@@ -678,23 +663,19 @@ class _WeekDaysRow extends StatelessWidget {
                 child: Text(
                   '${cellDate.day}',
                   style: AppTypography.numericMetric.copyWith(
-                    fontSize: 13,
+                    fontSize: 11,
                     color: isSelected ? Colors.white : AppColors.onSurface,
                     fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                   ),
                 ),
               ),
-              const SizedBox(height: 2),
-              // Activity Dot
-              if (hasTasksOnDate(cellDate))
-                Container(
-                  width: 4,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: isSelected ? AppColors.secondary : AppColors.primaryContainer,
-                    shape: BoxShape.circle,
-                  ),
-                ),
+              const SizedBox(height: 1),
+              // Weather Condition Icon
+              Icon(
+                weather.weatherIcon,
+                size: 10,
+                color: weather.indicatorColor,
+              ),
             ],
           ),
         );
@@ -705,20 +686,21 @@ class _WeekDaysRow extends StatelessWidget {
 
 class _LegendItem extends StatelessWidget {
   final Color color;
+  final IconData icon;
   final String label;
 
-  const _LegendItem({required this.color, required this.label});
+  const _LegendItem({
+    required this.color,
+    required this.icon,
+    required this.label,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          width: 8,
-          height: 8,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-        ),
+        Icon(icon, size: 12, color: color),
         const SizedBox(width: 4),
         Text(
           label,
