@@ -1,102 +1,74 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/farm_repository.dart';
-import '../../domain/models/parcel.dart';
 
 class FarmState {
-  final List<Parcel> parcels;
-  final double currentHectares;
-  final String selectedSowingMethod;
-  final String selectedSeedVariety;
+  final bool hasRegisteredCrop;
+  final int currentWizardStep;
+  final String? selectedCrop;
+  final DateTime? selectedDate;
+  final String? selectedSoilType;
   final bool isSaving;
-  final String? message;
 
   const FarmState({
-    required this.parcels,
-    required this.currentHectares,
-    required this.selectedSowingMethod,
-    required this.selectedSeedVariety,
+    this.hasRegisteredCrop = false,
+    this.currentWizardStep = 0,
+    this.selectedCrop,
+    this.selectedDate,
+    this.selectedSoilType,
     this.isSaving = false,
-    this.message,
   });
 
-  double get acres => currentHectares * 2.47105;
-
   FarmState copyWith({
-    List<Parcel>? parcels,
-    double? currentHectares,
-    String? selectedSowingMethod,
-    String? selectedSeedVariety,
+    bool? hasRegisteredCrop,
+    int? currentWizardStep,
+    String? selectedCrop,
+    DateTime? selectedDate,
+    String? selectedSoilType,
     bool? isSaving,
-    String? message,
   }) {
     return FarmState(
-      parcels: parcels ?? this.parcels,
-      currentHectares: currentHectares ?? this.currentHectares,
-      selectedSowingMethod: selectedSowingMethod ?? this.selectedSowingMethod,
-      selectedSeedVariety: selectedSeedVariety ?? this.selectedSeedVariety,
+      hasRegisteredCrop: hasRegisteredCrop ?? this.hasRegisteredCrop,
+      currentWizardStep: currentWizardStep ?? this.currentWizardStep,
+      selectedCrop: selectedCrop ?? this.selectedCrop,
+      selectedDate: selectedDate ?? this.selectedDate,
+      selectedSoilType: selectedSoilType ?? this.selectedSoilType,
       isSaving: isSaving ?? this.isSaving,
-      message: message,
     );
   }
 }
 
 class FarmController extends StateNotifier<FarmState> {
-  FarmController(FarmRepository repository)
-      : super(
-          FarmState(
-            parcels: repository.getInitialParcels(),
-            currentHectares: 140.0,
-            selectedSowingMethod: 'direct_precision',
-            selectedSeedVariety: 'san_marzano',
-          ),
-        );
+  FarmController() : super(const FarmState());
 
-  void updateHectares(double hectares) {
-    state = state.copyWith(currentHectares: hectares);
+  void setWizardStep(int step) {
+    state = state.copyWith(currentWizardStep: step);
   }
 
-  void updateSowingMethod(String method) {
-    state = state.copyWith(selectedSowingMethod: method);
+  void selectCrop(String crop) {
+    state = state.copyWith(selectedCrop: crop);
   }
 
-  void updateSeedVariety(String variety) {
-    state = state.copyWith(selectedSeedVariety: variety);
+  void selectDate(DateTime date) {
+    state = state.copyWith(selectedDate: date);
   }
 
-  Future<void> registerParcel() async {
-    state = state.copyWith(isSaving: true);
-    await Future.delayed(const Duration(milliseconds: 600));
+  void selectSoilType(String? soilType) {
+    state = state.copyWith(selectedSoilType: soilType);
+  }
 
-    final newParcel = Parcel(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      name: 'Lote ${state.parcels.length + 1}: Parcela ${state.selectedSeedVariety}',
-      hectares: state.currentHectares,
-      sowingMethod: state.selectedSowingMethod,
-      seedVariety: state.selectedSeedVariety == 'san_marzano'
-          ? 'San Marzano Heirloom Tomato'
-          : state.selectedSeedVariety,
-      germinationRate: 98.4,
-      targetPh: '6.2 - 6.8',
-      density: '28k/Ha',
-      status: 'Configurada',
-      lotCode: 'SEC-2025-0${state.parcels.length + 1}',
-      soilTemp: 18.4,
-    );
-
+  void completeRegistration() {
     state = state.copyWith(
-      parcels: [newParcel, ...state.parcels],
-      isSaving: false,
-      message: '¡Configuración de parcela registrada con éxito!',
+      hasRegisteredCrop: true,
+      currentWizardStep: 0,
     );
+  }
+
+  void resetFlow() {
+    state = const FarmState();
   }
 }
 
-final farmRepositoryProvider = Provider<FarmRepository>((ref) {
-  return FarmRepository();
-});
-
 final farmControllerProvider =
     StateNotifierProvider<FarmController, FarmState>((ref) {
-  final repo = ref.watch(farmRepositoryProvider);
-  return FarmController(repo);
+  return FarmController();
 });
+

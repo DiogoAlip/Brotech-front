@@ -12,19 +12,19 @@ final GlobalKey<NavigatorState> _rootNavigatorKey =
 
 final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: '/calendario',
+  initialLocation: '/finca',
   routes: [
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         return ScaffoldWithNavBar(navigationShell: navigationShell);
       },
       branches: [
-        // Destination 0: Farm / Finca
+        // Destination 0: Shop / Tienda
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/finca',
-              builder: (context, state) => const FarmScreen(),
+              path: '/tienda',
+              builder: (context, state) => const ShopScreen(),
             ),
           ],
         ),
@@ -39,22 +39,22 @@ final GoRouter appRouter = GoRouter(
           ],
         ),
 
-        // Destination 2: Consultas / Consultoría Integrada
+        // Destination 2: Farm / Finca (Middle)
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/finca',
+              builder: (context, state) => const FarmScreen(),
+            ),
+          ],
+        ),
+
+        // Destination 3: Consultas / Consultoría Integrada
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: '/consultas',
               builder: (context, state) => const ConsultasScreen(),
-            ),
-          ],
-        ),
-
-        // Destination 3: Shop / Tienda
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/tienda',
-              builder: (context, state) => const ShopScreen(),
             ),
           ],
         ),

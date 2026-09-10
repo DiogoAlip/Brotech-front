@@ -85,3 +85,5 @@ coverage/
 **/linux/flutter/ephemeral/
 **/windows/flutter/ephemeral/
 **/macos/Flutter/ephemeral/
+# Widget Preview related
+.widget_preview/

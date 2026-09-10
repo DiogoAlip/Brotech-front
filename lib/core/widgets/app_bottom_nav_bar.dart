@@ -41,9 +41,10 @@ class AppBottomNavBar extends StatelessWidget {
               _NavBarItem(
                 index: 0,
                 currentIndex: currentIndex,
-                icon: Icons.inventory_2_outlined,
-                activeIcon: Icons.inventory_2,
-                label: 'Finca',
+                icon: Icons.shopping_cart_outlined,
+                activeIcon: Icons.shopping_cart,
+                label: 'Tienda',
+                badgeCount: 3,
                 onTap: () => onTap(0),
               ),
               _NavBarItem(
@@ -57,18 +58,17 @@ class AppBottomNavBar extends StatelessWidget {
               _NavBarItem(
                 index: 2,
                 currentIndex: currentIndex,
-                icon: Icons.support_agent_outlined,
-                activeIcon: Icons.support_agent,
-                label: 'Consultas',
+                icon: Icons.inventory_2_outlined,
+                activeIcon: Icons.inventory_2,
+                label: 'Finca',
                 onTap: () => onTap(2),
               ),
               _NavBarItem(
                 index: 3,
                 currentIndex: currentIndex,
-                icon: Icons.shopping_cart_outlined,
-                activeIcon: Icons.shopping_cart,
-                label: 'Tienda',
-                badgeCount: 3,
+                icon: Icons.support_agent_outlined,
+                activeIcon: Icons.support_agent,
+                label: 'Consultas',
                 onTap: () => onTap(3),
               ),
               _NavBarItem(
