@@ -23,9 +23,20 @@ void main() {
     expect(find.text('Tienda'), findsOneWidget);
     expect(find.text('Perfil'), findsOneWidget);
 
-    // Verify Calendar view elements
-    expect(find.text('Mayo 2025'), findsOneWidget);
-    expect(find.text('Miércoles, 14 de Mayo'), findsOneWidget);
+    // Verify Calendar view elements for current date
+    final now = DateTime.now();
+    const months = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+    const weekdays = [
+      'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'
+    ];
+    final expectedMonthYear = '${months[now.month - 1]} ${now.year}';
+    final expectedDayHeader = '${weekdays[now.weekday - 1]}, ${now.day} de ${months[now.month - 1]}';
+
+    expect(find.text(expectedMonthYear), findsOneWidget);
+    expect(find.text(expectedDayHeader), findsOneWidget);
     expect(find.text('Agregar Tarea'), findsOneWidget);
   });
 }

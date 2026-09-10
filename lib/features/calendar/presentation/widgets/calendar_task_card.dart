@@ -41,10 +41,17 @@ class CalendarTaskCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Top Bar: Time, Category Pill, Status Badge
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    // Top Bar: Time, Category Pill, Priority, Status Badge
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      alignment: WrapAlignment.spaceBetween,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        Row(
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 4,
+                          crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -60,7 +67,6 @@ class CalendarTaskCard extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 6),
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                               decoration: BoxDecoration(
@@ -68,6 +74,7 @@ class CalendarTaskCard extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Row(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(task.categoryIcon, size: 12, color: task.categoryColor),
                                   const SizedBox(width: 4),
@@ -85,37 +92,61 @@ class CalendarTaskCard extends StatelessWidget {
                             ),
                           ],
                         ),
-                        // Status Badge
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: task.statusBgColor,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              if (task.isInProgress) ...[
-                                Container(
-                                  width: 6,
-                                  height: 6,
-                                  decoration: const BoxDecoration(
-                                    color: AppColors.secondary,
-                                    shape: BoxShape.circle,
+                        // Priority and Status Badges
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (task.priority != null && task.priority!.isNotEmpty) ...[
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: _getPriorityBg(task.priority!),
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(color: _getPriorityBorder(task.priority!), width: 0.8),
+                                ),
+                                child: Text(
+                                  task.priority!,
+                                  style: AppTypography.labelSm.copyWith(
+                                    color: _getPriorityColor(task.priority!),
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 9,
                                   ),
                                 ),
-                                const SizedBox(width: 4),
-                              ],
-                              Text(
-                                task.status,
-                                style: AppTypography.labelSm.copyWith(
-                                  color: task.statusTextColor,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 10,
-                                ),
                               ),
+                              const SizedBox(width: 4),
                             ],
-                          ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: task.statusBgColor,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (task.isInProgress) ...[
+                                    Container(
+                                      width: 6,
+                                      height: 6,
+                                      decoration: const BoxDecoration(
+                                        color: AppColors.secondary,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                  ],
+                                  Text(
+                                    task.status,
+                                    style: AppTypography.labelSm.copyWith(
+                                      color: task.statusTextColor,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -190,5 +221,41 @@ class _SpecChip extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+Color _getPriorityColor(String priority) {
+  switch (priority.toLowerCase()) {
+    case 'alta':
+      return const Color(0xFFBA1A1A);
+    case 'media':
+      return const Color(0xFFB87800);
+    case 'baja':
+    default:
+      return AppColors.secondary;
+  }
+}
+
+Color _getPriorityBg(String priority) {
+  switch (priority.toLowerCase()) {
+    case 'alta':
+      return const Color(0xFFFFDAD6);
+    case 'media':
+      return const Color(0xFFFFF3D6);
+    case 'baja':
+    default:
+      return const Color(0xFFE0F7EF);
+  }
+}
+
+Color _getPriorityBorder(String priority) {
+  switch (priority.toLowerCase()) {
+    case 'alta':
+      return const Color(0xFFFFB4AB);
+    case 'media':
+      return const Color(0xFFFFDEAD);
+    case 'baja':
+    default:
+      return const Color(0xFFA2D0C2);
   }
 }
