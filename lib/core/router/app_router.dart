@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/farm/presentation/screens/farm_screen.dart';
 import '../../features/calendar/presentation/screens/calendar_screen.dart';
-import '../../features/chatbot/presentation/screens/chatbot_screen.dart';
+import '../../features/consultas/presentation/screens/consultas_screen.dart';
 import '../../features/shop/presentation/screens/shop_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../widgets/scaffold_with_nav_bar.dart';
@@ -39,12 +39,12 @@ final GoRouter appRouter = GoRouter(
           ],
         ),
 
-        // Destination 2: Chatbot / Chat-bot
+        // Destination 2: Consultas / Consultoría Integrada
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/chatbot',
-              builder: (context, state) => const ChatbotScreen(),
+              path: '/consultas',
+              builder: (context, state) => const ConsultasScreen(),
             ),
           ],
         ),

@@ -6,14 +6,14 @@ import '../controllers/chatbot_controller.dart';
 import '../widgets/chat_message_bubble.dart';
 import '../widgets/chat_input_bar.dart';
 
-class ChatbotScreen extends ConsumerStatefulWidget {
-  const ChatbotScreen({super.key});
+class ChatbotView extends ConsumerStatefulWidget {
+  const ChatbotView({super.key});
 
   @override
-  ConsumerState<ChatbotScreen> createState() => _ChatbotScreenState();
+  ConsumerState<ChatbotView> createState() => _ChatbotViewState();
 }
 
-class _ChatbotScreenState extends ConsumerState<ChatbotScreen> {
+class _ChatbotViewState extends ConsumerState<ChatbotView> {
   final TextEditingController _textController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 

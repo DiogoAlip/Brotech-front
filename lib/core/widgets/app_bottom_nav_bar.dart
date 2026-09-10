@@ -57,9 +57,9 @@ class AppBottomNavBar extends StatelessWidget {
               _NavBarItem(
                 index: 2,
                 currentIndex: currentIndex,
-                icon: Icons.smart_toy_outlined,
-                activeIcon: Icons.smart_toy,
-                label: 'Chatbot',
+                icon: Icons.support_agent_outlined,
+                activeIcon: Icons.support_agent,
+                label: 'Consultas',
                 onTap: () => onTap(2),
               ),
               _NavBarItem(
