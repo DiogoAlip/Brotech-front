@@ -67,48 +67,56 @@ class WizardDateStep extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '¿Cuándo lo sembraste?',
-            style: AppTypography.headlineLg.copyWith(
-              fontWeight: FontWeight.w700,
-              color: AppColors.onSurface,
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '¿Cuándo lo sembraste?',
+                    style: AppTypography.headlineLg.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Esto nos ayuda a saber en qué etapa está la planta para darte mejores recomendaciones.',
+                    style: AppTypography.bodyLg.copyWith(
+                      color: AppColors.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  
+                  dateButton('Hoy', today),
+                  dateButton('Ayer', yesterday),
+                  dateButton('Hace una semana', lastWeek),
+                  
+                  const SizedBox(height: 12),
+                  Center(
+                    child: TextButton.icon(
+                      onPressed: () async {
+                        final date = await showDatePicker(
+                          context: context,
+                          initialDate: state.selectedDate ?? today,
+                          firstDate: today.subtract(const Duration(days: 365)),
+                          lastDate: today,
+                        );
+                        if (date != null) {
+                          controller.selectDate(date);
+                        }
+                      },
+                      icon: const Icon(Icons.calendar_month),
+                      label: const Text('Elegir otra fecha en el calendario'),
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 24),
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: 12),
-          Text(
-            'Esto nos ayuda a saber en qué etapa está la planta para darte mejores recomendaciones.',
-            style: AppTypography.bodyLg.copyWith(
-              color: AppColors.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 32),
-          
-          dateButton('Hoy', today),
-          dateButton('Ayer', yesterday),
-          dateButton('Hace una semana', lastWeek),
-          
-          const SizedBox(height: 12),
-          Center(
-            child: TextButton.icon(
-              onPressed: () async {
-                final date = await showDatePicker(
-                  context: context,
-                  initialDate: state.selectedDate ?? today,
-                  firstDate: today.subtract(const Duration(days: 365)),
-                  lastDate: today,
-                );
-                if (date != null) {
-                  controller.selectDate(date);
-                }
-              },
-              icon: const Icon(Icons.calendar_month),
-              label: const Text('Elegir otra fecha en el calendario'),
-            ),
-          ),
-          
-          const Spacer(),
           SizedBox(
             width: double.infinity,
             height: 56,

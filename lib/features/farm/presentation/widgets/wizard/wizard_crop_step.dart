@@ -26,71 +26,80 @@ class WizardCropStep extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '¿Qué cultivo vamos a sembrar?',
-            style: AppTypography.headlineLg.copyWith(
-              fontWeight: FontWeight.w700,
-              color: AppColors.onSurface,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Selecciona el cultivo principal de tu parcela para calcular la siembra ideal.',
-            style: AppTypography.bodyLg.copyWith(
-              color: AppColors.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 32),
           Expanded(
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 0.9,
-              ),
-              itemCount: crops.length,
-              itemBuilder: (context, index) {
-                final crop = crops[index];
-                final isSelected = state.selectedCrop == crop['id'];
-
-                return InkWell(
-                  onTap: () {
-                    controller.selectCrop(crop['id'] as String);
-                  },
-                  borderRadius: BorderRadius.circular(16),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: isSelected ? AppColors.primaryContainer : AppColors.surfaceContainer,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: isSelected ? AppColors.primary : Colors.transparent,
-                        width: 2,
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          crop['icon'] as IconData,
-                          size: 48,
-                          color: isSelected ? AppColors.primary : AppColors.onSurfaceVariant,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          crop['name'] as String,
-                          style: AppTypography.labelLg.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: isSelected ? AppColors.primary : AppColors.onSurface,
-                          ),
-                        ),
-                      ],
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '¿Qué cultivo vamos a sembrar?',
+                    style: AppTypography.headlineLg.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.onSurface,
                     ),
                   ),
-                );
-              },
+                  const SizedBox(height: 12),
+                  Text(
+                    'Selecciona el cultivo principal de tu parcela para calcular la siembra ideal.',
+                    style: AppTypography.bodyLg.copyWith(
+                      color: AppColors.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                      childAspectRatio: 0.9,
+                    ),
+                    itemCount: crops.length,
+                    itemBuilder: (context, index) {
+                      final crop = crops[index];
+                      final isSelected = state.selectedCrop == crop['id'];
+
+                      return InkWell(
+                        onTap: () {
+                          controller.selectCrop(crop['id'] as String);
+                        },
+                        borderRadius: BorderRadius.circular(16),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: isSelected ? AppColors.primaryContainer : AppColors.surfaceContainer,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: isSelected ? AppColors.primary : Colors.transparent,
+                              width: 2,
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                crop['icon'] as IconData,
+                                size: 48,
+                                color: isSelected ? AppColors.primary : AppColors.onSurfaceVariant,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                crop['name'] as String,
+                                style: AppTypography.labelLg.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: isSelected ? AppColors.primary : AppColors.onSurface,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                ],
+              ),
             ),
           ),
           SizedBox(

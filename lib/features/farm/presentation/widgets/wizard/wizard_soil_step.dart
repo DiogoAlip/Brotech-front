@@ -66,27 +66,35 @@ class WizardSoilStep extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '¿Conoces el tipo de tierra?',
-            style: AppTypography.headlineLg.copyWith(
-              fontWeight: FontWeight.w700,
-              color: AppColors.onSurface,
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '¿Conoces el tipo de tierra?',
+                    style: AppTypography.headlineLg.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Es opcional, pero ayuda a recomendarte el mejor riego.',
+                    style: AppTypography.bodyLg.copyWith(
+                      color: AppColors.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  
+                  ...soils.map((soil) => soilButton(soil)),
+                  
+                  const SizedBox(height: 24),
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: 12),
-          Text(
-            'Es opcional, pero ayuda a recomendarte el mejor riego.',
-            style: AppTypography.bodyLg.copyWith(
-              color: AppColors.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 32),
-          
-          ...soils.map((soil) => soilButton(soil)),
-          
-          const Spacer(),
           
           SizedBox(
             width: double.infinity,
