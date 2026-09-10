@@ -6,8 +6,8 @@ import 'package:client/features/calendar/domain/models/calendar_task.dart';
 import 'package:client/features/calendar/presentation/controllers/calendar_controller.dart';
 
 void main() {
-  group('CalendarTask advanceStatus unit tests', () {
-    test('Programado -> En Curso -> Completado progression', () {
+  group('CalendarTask advanceStatus & regressStatus unit tests', () {
+    test('Programado -> En Curso -> Completado -> En Curso -> Programado progression', () {
       const task = CalendarTask(
         id: 'test-1',
         time: '08:00',
@@ -29,26 +29,41 @@ void main() {
       expect(task.status, 'Programado');
       expect(task.isInProgress, false);
 
-      // 1st drag/advance -> En Curso
+      // Advance 1: Programado -> En Curso
       final inProgressTask = task.advanceStatus();
       expect(inProgressTask.status, 'En Curso');
       expect(inProgressTask.isInProgress, true);
 
-      // 2nd drag/advance -> Completado
+      // Advance 2: En Curso -> Completado
       final completedTask = inProgressTask.advanceStatus();
       expect(completedTask.status, 'Completado');
       expect(completedTask.isInProgress, false);
 
-      // 3rd advance -> stays Completado
+      // Advance 3 (at boundary): stays Completado
       final finalTask = completedTask.advanceStatus();
       expect(finalTask.status, 'Completado');
       expect(finalTask.isInProgress, false);
+
+      // Regress 1: Completado -> En Curso
+      final regressedToInProgress = finalTask.regressStatus();
+      expect(regressedToInProgress.status, 'En Curso');
+      expect(regressedToInProgress.isInProgress, true);
+
+      // Regress 2: En Curso -> Programado
+      final regressedToScheduled = regressedToInProgress.regressStatus();
+      expect(regressedToScheduled.status, 'Programado');
+      expect(regressedToScheduled.isInProgress, false);
+
+      // Regress 3 (at boundary): stays Programado
+      final initialBoundary = regressedToScheduled.regressStatus();
+      expect(initialBoundary.status, 'Programado');
+      expect(initialBoundary.isInProgress, false);
     });
   });
 
   group('Calendar Task Drag Widget Tests', () {
     testWidgets(
-        'Dragging task horizontally advances state from Programado to En Curso to Completado',
+        'Dragging LEFT advances status (Programado -> En Curso -> Completado), dragging RIGHT regresses status',
         (WidgetTester tester) async {
       tester.view.physicalSize = const Size(1080, 1920);
       tester.view.devicePixelRatio = 1.0;
@@ -78,29 +93,47 @@ void main() {
       // Initial state is "Programado"
       expect(find.text('Programado'), findsWidgets);
 
-      // 1. Drag task to the RIGHT to advance: Programado -> En Curso
-      await tester.drag(taskFinder, const Offset(500, 0));
-      await tester.pumpAndSettle();
-
-      // State is now "En Curso"
-      expect(find.text('En Curso'), findsWidgets);
-      expect(find.textContaining('ahora está: En Curso'), findsOneWidget);
-
-      // 2. Drag task to the LEFT to advance: En Curso -> Completado
+      // 1. Drag task to the LEFT (endToStart) to advance: Programado -> En Curso
       await tester.drag(taskFinder, const Offset(-500, 0));
       await tester.pumpAndSettle();
 
-      // State is now "Completado"
-      expect(find.text('Completado'), findsWidgets);
-      expect(find.textContaining('ahora está: Completado'), findsOneWidget);
+      expect(find.text('En Curso'), findsWidgets);
+      expect(find.textContaining('avanzó a: En Curso'), findsOneWidget);
 
-      // 3. Drag task again when already Completado
+      // 2. Drag task to the LEFT (endToStart) to advance: En Curso -> Completado
+      await tester.drag(taskFinder, const Offset(-500, 0));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Completado'), findsWidgets);
+      expect(find.textContaining('avanzó a: Completado'), findsOneWidget);
+
+      // 3. Drag task to the LEFT when already Completado
+      await tester.drag(taskFinder, const Offset(-500, 0));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Completado'), findsWidgets);
+      expect(find.text('Esta labor ya ha sido completada.'), findsOneWidget);
+
+      // 4. Drag task to the RIGHT (startToEnd) to reverse: Completado -> En Curso
       await tester.drag(taskFinder, const Offset(500, 0));
       await tester.pumpAndSettle();
 
-      // Task remains "Completado" and informs user
-      expect(find.text('Completado'), findsWidgets);
-      expect(find.text('Esta labor ya ha sido completada.'), findsOneWidget);
+      expect(find.text('En Curso'), findsWidgets);
+      expect(find.textContaining('regresó a: En Curso'), findsOneWidget);
+
+      // 5. Drag task to the RIGHT (startToEnd) to reverse: En Curso -> Programado
+      await tester.drag(taskFinder, const Offset(500, 0));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Programado'), findsWidgets);
+      expect(find.textContaining('regresó a: Programado'), findsOneWidget);
+
+      // 6. Drag task to the RIGHT when already Programado
+      await tester.drag(taskFinder, const Offset(500, 0));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Programado'), findsWidgets);
+      expect(find.text('Esta labor ya está en estado inicial (Programado).'), findsOneWidget);
     });
   });
 }

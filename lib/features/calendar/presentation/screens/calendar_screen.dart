@@ -161,7 +161,7 @@ class CalendarScreen extends ConsumerWidget {
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
-                        'Desliza una tarea hacia la izquierda o derecha para cambiar su estado',
+                        'Desliza a la izquierda para avanzar o a la derecha para retroceder estado',
                         style: AppTypography.bodySm.copyWith(
                           fontSize: 11,
                           color: AppColors.onSurfaceVariant,
@@ -183,26 +183,53 @@ class CalendarScreen extends ConsumerWidget {
                     key: ValueKey(task.id),
                     direction: DismissDirection.horizontal,
                     confirmDismiss: (direction) async {
-                      if (task.status == 'Completado') {
+                      if (direction == DismissDirection.endToStart) {
+                        // Deslizar a la izquierda -> Avanza estado
+                        if (task.status == 'Completado') {
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Esta labor ya ha sido completada.'),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                          return false;
+                        }
+                        ref.read(calendarControllerProvider.notifier).advanceTaskStatus(task);
+                        final nextStatus = task.status == 'Programado' ? 'En Curso' : 'Completado';
                         ScaffoldMessenger.of(context).hideCurrentSnackBar();
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Esta labor ya ha sido completada.'),
-                            duration: Duration(seconds: 2),
+                          SnackBar(
+                            content: Text('Labor "${task.title}" avanzó a: $nextStatus'),
+                            backgroundColor: nextStatus == 'En Curso' ? const Color(0xFF007058) : AppColors.secondary,
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                        return false;
+                      } else if (direction == DismissDirection.startToEnd) {
+                        // Deslizar a la derecha -> Retrocede estado
+                        if (task.status == 'Programado') {
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Esta labor ya está en estado inicial (Programado).'),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                          return false;
+                        }
+                        ref.read(calendarControllerProvider.notifier).regressTaskStatus(task);
+                        final prevStatus = task.status == 'Completado' ? 'En Curso' : 'Programado';
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Labor "${task.title}" regresó a: $prevStatus'),
+                            backgroundColor: prevStatus == 'En Curso' ? const Color(0xFF007058) : const Color(0xFFD4971E),
+                            duration: const Duration(seconds: 2),
                           ),
                         );
                         return false;
                       }
-                      ref.read(calendarControllerProvider.notifier).advanceTaskStatus(task);
-                      final nextStatus = task.status == 'Programado' ? 'En Curso' : 'Completado';
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Labor "${task.title}" ahora está: $nextStatus'),
-                          backgroundColor: nextStatus == 'En Curso' ? const Color(0xFF007058) : AppColors.secondary,
-                          duration: const Duration(seconds: 2),
-                        ),
-                      );
                       return false;
                     },
                     background: _buildSwipeBackground(task, Alignment.centerLeft),
@@ -317,25 +344,44 @@ class CalendarScreen extends ConsumerWidget {
   }
 
   Widget _buildSwipeBackground(CalendarTask task, Alignment alignment) {
+    final isLeft = alignment == Alignment.centerLeft;
     Color bg;
     IconData icon;
     String label;
+    Color contentColor = Colors.white;
 
-    if (task.status == 'Programado') {
-      bg = AppColors.secondaryAccent;
-      icon = Icons.play_arrow_rounded;
-      label = 'Pasar a En Curso';
-    } else if (task.status == 'En Curso') {
-      bg = AppColors.secondary;
-      icon = Icons.check_circle_rounded;
-      label = 'Marcar Completado';
+    if (isLeft) {
+      // Fondo a la izquierda (arrastrar hacia la derecha -> Retroceder)
+      if (task.status == 'Completado') {
+        bg = const Color(0xFF007058);
+        icon = Icons.undo_rounded;
+        label = 'Retroceder a En Curso';
+      } else if (task.status == 'En Curso') {
+        bg = const Color(0xFFD4971E);
+        icon = Icons.history_rounded;
+        label = 'Retroceder a Programado';
+      } else {
+        bg = AppColors.surfaceContainerHigh;
+        icon = Icons.first_page_rounded;
+        label = 'Estado Inicial (Programado)';
+        contentColor = AppColors.onSurfaceVariant;
+      }
     } else {
-      bg = AppColors.primaryContainer;
-      icon = Icons.task_alt_rounded;
-      label = 'Ya Completado';
+      // Fondo a la derecha (arrastrar hacia la izquierda -> Avanzar)
+      if (task.status == 'Programado') {
+        bg = AppColors.secondaryAccent;
+        icon = Icons.play_arrow_rounded;
+        label = 'Pasar a En Curso';
+      } else if (task.status == 'En Curso') {
+        bg = AppColors.secondary;
+        icon = Icons.check_circle_rounded;
+        label = 'Marcar Completado';
+      } else {
+        bg = AppColors.primaryContainer;
+        icon = Icons.task_alt_rounded;
+        label = 'Labor Completada';
+      }
     }
-
-    final isLeft = alignment == Alignment.centerLeft;
 
     return Container(
       decoration: BoxDecoration(
@@ -348,12 +394,12 @@ class CalendarScreen extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: isLeft
             ? [
-                Icon(icon, color: Colors.white, size: 22),
+                Icon(icon, color: contentColor, size: 22),
                 const SizedBox(width: 8),
                 Text(
                   label,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: contentColor,
                     fontWeight: FontWeight.w700,
                     fontSize: 13,
                   ),
@@ -362,14 +408,14 @@ class CalendarScreen extends ConsumerWidget {
             : [
                 Text(
                   label,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: contentColor,
                     fontWeight: FontWeight.w700,
                     fontSize: 13,
                   ),
                 ),
                 const SizedBox(width: 8),
-                Icon(icon, color: Colors.white, size: 22),
+                Icon(icon, color: contentColor, size: 22),
               ],
       ),
     );

@@ -77,6 +77,15 @@ class CalendarController extends StateNotifier<CalendarState> {
     );
   }
 
+  void regressTaskStatus(CalendarTask task, [DateTime? targetDate]) {
+    final date = targetDate ?? state.selectedDate;
+    final updatedTask = task.regressStatus();
+    _repository.updateTaskForDate(date, updatedTask);
+    state = state.copyWith(
+      tasks: _repository.getTasksForDate(state.selectedDate),
+    );
+  }
+
   bool hasTasksOnDate(DateTime date) {
     return _repository.hasTasksOnDate(date);
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class CalendarTask {
   final String id;
@@ -88,6 +89,26 @@ class CalendarTask {
         status: 'Completado',
         statusBgColor: const Color(0xFFE8F5E9),
         statusTextColor: const Color(0xFF006B54),
+        isInProgress: false,
+      );
+    } else {
+      return this;
+    }
+  }
+
+  CalendarTask regressStatus() {
+    if (status == 'Completado') {
+      return copyWith(
+        status: 'En Curso',
+        statusBgColor: const Color(0x3375F6CE),
+        statusTextColor: const Color(0xFF007058),
+        isInProgress: true,
+      );
+    } else if (status == 'En Curso') {
+      return copyWith(
+        status: 'Programado',
+        statusBgColor: AppColors.surfaceContainer,
+        statusTextColor: AppColors.onSurfaceVariant,
         isInProgress: false,
       );
     } else {
