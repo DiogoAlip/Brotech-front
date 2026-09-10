@@ -31,8 +31,6 @@ La aplicación implementa las 5 vistas completas del marketplace y gestión agro
 Basada fielmente en `@stitch_agronomic_seed_marketplace/calendario_agron_mico`:
 - **Header Superior (`AppHeader`):**
   - Logotipo oficial de Brotec (`assets/images/brotec_title_logo.png`).
-  - Botón de notificaciones con punto indicador de alertas agronómicas.
-  - Botón de configuración del sistema.
 - **Barra de Navegación Inferior (`AppBottomNavBar`):**
   - **Detección de ruta activa en verde:** La ruta seleccionada resalta con el icono relleno, color verde esmeralda botánico (`#006B54`), etiqueta en negrita y un indicador de punto activo verde.
   - Las rutas inactivas se muestran en tono gris/pizarra (`#78716C`).

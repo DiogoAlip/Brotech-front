@@ -19,16 +19,17 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // Verify header icons
-    expect(find.byIcon(Icons.notifications_outlined), findsOneWidget);
-    expect(find.byIcon(Icons.settings_outlined), findsOneWidget);
+    // Verify header icons (notifications and settings) are removed
+    expect(find.byIcon(Icons.notifications_outlined), findsNothing);
+    expect(find.byIcon(Icons.settings_outlined), findsNothing);
 
     // Verify 5 bottom navigation destinations
     expect(find.text('Finca'), findsOneWidget);
-    expect(find.text('Calendario'), findsOneWidget);
+    expect(find.text('Clima'), findsOneWidget);
     expect(find.text('Consultas'), findsOneWidget);
     expect(find.text('Tienda'), findsOneWidget);
     expect(find.text('Perfil'), findsOneWidget);
+    expect(find.byIcon(Icons.wb_cloudy), findsWidgets);
 
     // Verify Top Climate Notification
     expect(find.text('Heladas y cambios climáticos'), findsOneWidget);
@@ -54,5 +55,25 @@ void main() {
     // Verify Tasks and Add Task modal button are removed
     expect(find.text('Agregar Tarea'), findsNothing);
     expect(find.text('Sin labores programadas'), findsNothing);
+
+    // Navigate to Perfil and verify Operaciones y Certificaciones has no storefront icon
+    await tester.tap(find.text('Perfil'));
+    await tester.pumpAndSettle();
+    expect(find.text('Operaciones y Certificaciones'), findsOneWidget);
+    expect(find.byIcon(Icons.storefront_outlined), findsNothing);
+
+    // Verify "Inspectora" is removed and status dropdown shows "Activo"
+    expect(find.textContaining('Inspectora'), findsNothing);
+    final statusDropdownFinder = find.byKey(const ValueKey('profile_status_dropdown'));
+    expect(statusDropdownFinder, findsOneWidget);
+    expect(find.text('Activo'), findsOneWidget);
+
+    // Change status to "Inactivo" via DropdownButton
+    await tester.tap(statusDropdownFinder);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Inactivo').last);
+    await tester.pumpAndSettle();
+    expect(find.text('Inactivo'), findsOneWidget);
+    expect(find.text('Activo'), findsNothing);
   });
 }

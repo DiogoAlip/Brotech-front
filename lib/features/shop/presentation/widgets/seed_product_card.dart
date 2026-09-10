@@ -168,11 +168,13 @@ class SeedProductCard extends StatelessWidget {
                   children: [
                     const Icon(Icons.thumb_up_alt_outlined, size: 20, color: AppColors.primary),
                     const SizedBox(width: 8),
-                    Text(
-                      product.qualityLabel,
-                      style: AppTypography.labelLg.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
+                    Expanded(
+                      child: Text(
+                        product.qualityLabel,
+                        style: AppTypography.labelLg.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],

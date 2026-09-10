@@ -3,9 +3,11 @@ import '../../data/profile_repository.dart';
 import '../../domain/models/agronomist_profile.dart';
 
 class ProfileController extends StateNotifier<AgronomistProfile> {
-  final ProfileRepository _repository;
+  ProfileController(ProfileRepository repository) : super(repository.getProfile());
 
-  ProfileController(this._repository) : super(_repository.getProfile());
+  void updateStatus(String status) {
+    state = state.copyWith(status: status);
+  }
 }
 
 final profileRepositoryProvider = Provider<ProfileRepository>((ref) {

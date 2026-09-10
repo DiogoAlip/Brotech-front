@@ -8,7 +8,7 @@ class ProfileRepository {
       farmName: 'Finca El Roble',
       zone: 'Zone 9B',
       hectares: 140.0,
-      status: 'Inspectora Activa',
+      status: 'Activo',
       labId: 'Lab ID #BRO-8841',
       activePlots: 4,
       registeredLots: 12,

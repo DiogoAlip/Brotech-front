@@ -98,4 +98,55 @@ abstract class AppTheme {
       ),
     );
   }
+
+  static ThemeData get darkTheme {
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: const Color(0xFF131715),
+      colorScheme: const ColorScheme(
+        brightness: Brightness.dark,
+        primary: Color(0xFF75F6CE),
+        onPrimary: Color(0xFF00382B),
+        primaryContainer: Color(0xFF00513F),
+        onPrimaryContainer: Color(0xFF93F2D4),
+        secondary: Color(0xFF59DCB5),
+        onSecondary: Color(0xFF00382B),
+        secondaryContainer: Color(0xFF00513F),
+        onSecondaryContainer: Color(0xFF75F6CE),
+        tertiary: Color(0xFFFDBB42),
+        onTertiary: Color(0xFF432C00),
+        tertiaryContainer: Color(0xFF604100),
+        onTertiaryContainer: Color(0xFFFFDEAD),
+        error: Color(0xFFFFB4AB),
+        onError: Color(0xFF690005),
+        errorContainer: Color(0xFF93000A),
+        onErrorContainer: Color(0xFFFFDAD6),
+        surface: Color(0xFF1E2421),
+        onSurface: Color(0xFFE2E3E0),
+        onSurfaceVariant: Color(0xFFC1C8C4),
+        outline: Color(0xFF8B938F),
+        outlineVariant: Color(0xFF414945),
+      ),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Color(0xFF1E2421),
+        foregroundColor: Color(0xFFE2E3E0),
+        elevation: 0,
+        scrolledUnderElevation: 0.5,
+        centerTitle: false,
+      ),
+      cardTheme: CardThemeData(
+        color: const Color(0xFF1E2421),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: const BorderSide(
+            color: Color(0x3375F6CE),
+            width: 1,
+          ),
+        ),
+        margin: EdgeInsets.zero,
+      ),
+    );
+  }
 }

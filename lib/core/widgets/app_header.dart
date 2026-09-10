@@ -39,124 +39,39 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
         child: Container(
           height: 60,
           padding: const EdgeInsets.symmetric(horizontal: 16),
+          alignment: Alignment.centerLeft,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              // Logo Area
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset(
-                    'assets/images/brotec_title_logo.png',
-                    height: 32,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Row(
-                        children: [
-                          Image.asset(
-                            'assets/images/brotec_logo.png',
-                            height: 30,
-                            fit: BoxFit.contain,
-                            errorBuilder: (context, err, stack) => const Icon(
-                              Icons.eco,
-                              color: AppColors.secondary,
-                              size: 26,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'BROTEC',
-                            style: AppTypography.headlineSm.copyWith(
-                              letterSpacing: 1.2,
-                              fontWeight: FontWeight.w800,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ],
-              ),
-
-              // Action Buttons (Notifications & Settings)
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Notifications Button with badge dot
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(20),
-                      onTap: onNotificationTap ?? () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('No hay nuevas alertas agronómicas'),
-                            duration: Duration(seconds: 2),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        width: 38,
-                        height: 38,
-                        alignment: Alignment.center,
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            const Icon(
-                              Icons.notifications_outlined,
-                              color: AppColors.primary,
-                              size: 22,
-                            ),
-                            Positioned(
-                              top: 0,
-                              right: 0,
-                              child: Container(
-                                width: 8,
-                                height: 8,
-                                decoration: BoxDecoration(
-                                  color: AppColors.secondary,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: AppColors.surfaceContainerLowest,
-                                    width: 1.5,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+              Image.asset(
+                'assets/images/brotec_title_logo.png',
+                height: 32,
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return Row(
+                    children: [
+                      Image.asset(
+                        'assets/images/brotec_logo.png',
+                        height: 30,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, err, stack) => const Icon(
+                          Icons.eco,
+                          color: AppColors.secondary,
+                          size: 26,
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-
-                  // Settings Button
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(20),
-                      onTap: onSettingsTap ?? () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Configuración del sistema Brotec'),
-                            duration: Duration(seconds: 2),
-                          ),
-                        );
-                      },
-                      child: const SizedBox(
-                        width: 38,
-                        height: 38,
-                        child: Icon(
-                          Icons.settings_outlined,
+                      const SizedBox(width: 8),
+                      Text(
+                        'BROTEC',
+                        style: AppTypography.headlineSm.copyWith(
+                          letterSpacing: 1.2,
+                          fontWeight: FontWeight.w800,
                           color: AppColors.primary,
-                          size: 22,
                         ),
                       ),
-                    ),
-                  ),
-                ],
+                    ],
+                  );
+                },
               ),
             ],
           ),

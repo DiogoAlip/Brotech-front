@@ -50,9 +50,9 @@ class AppBottomNavBar extends StatelessWidget {
               _NavBarItem(
                 index: 1,
                 currentIndex: currentIndex,
-                icon: Icons.calendar_today_outlined,
-                activeIcon: Icons.calendar_today,
-                label: 'Calendario',
+                icon: Icons.wb_cloudy_outlined,
+                activeIcon: Icons.wb_cloudy,
+                label: 'Clima',
                 onTap: () => onTap(1),
               ),
               _NavBarItem(
@@ -110,8 +110,8 @@ class _NavBarItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isActive = index == currentIndex;
     // Green active color from stitch specification
-    final Color activeColor = AppColors.secondary; // #006B54 Botanical Emerald
-    final Color inactiveColor = const Color(0xFF78716C); // #78716C stone / onSurfaceVariant
+    const Color activeColor = AppColors.secondary; // #006B54 Botanical Emerald
+    const Color inactiveColor = Color(0xFF78716C); // #78716C stone / onSurfaceVariant
 
     return Expanded(
       child: InkWell(
@@ -170,7 +170,7 @@ class _NavBarItem extends StatelessWidget {
               duration: const Duration(milliseconds: 200),
               width: isActive ? 4 : 0,
               height: isActive ? 4 : 0,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: activeColor,
                 shape: BoxShape.circle,
               ),

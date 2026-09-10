@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/theme/theme_provider.dart';
 import '../controllers/profile_controller.dart';
 import '../widgets/profile_bio_card.dart';
-import '../widgets/profile_stats_grid.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -12,6 +12,7 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(profileControllerProvider);
+    final isDark = ref.watch(isDarkModeProvider);
 
     return Scaffold(
       backgroundColor: AppColors.surface,
@@ -24,26 +25,18 @@ class ProfileScreen extends ConsumerWidget {
             ProfileBioCard(profile: profile),
             const SizedBox(height: 16),
 
-            // Bento Quick Stats Grid
-            ProfileStatsGrid(profile: profile),
-            const SizedBox(height: 20),
-
-            // Operations & Management Section
+            // Operations & Management Section (Shop processes & Certifications)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    const Icon(Icons.agriculture, color: AppColors.secondary, size: 20),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Operaciones Agronómicas',
-                      style: AppTypography.headlineSm.copyWith(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                      ),
+                Expanded(
+                  child: Text(
+                    'Operaciones y Certificaciones',
+                    style: AppTypography.headlineSm.copyWith(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
                     ),
-                  ],
+                  ),
                 ),
                 TextButton(
                   onPressed: () {},
@@ -59,9 +52,9 @@ class ProfileScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 10),
 
-            // Operation Item 1: Recent Seed Order
+            // Shop Process 1: Recent Seed Order
             _OperationTile(
-              icon: Icons.local_shipping,
+              icon: Icons.local_shipping_outlined,
               title: 'Pedido de Semillas #ORD-9921',
               subtitle: '3 Lotes Certificados • Despacho Finca El Roble',
               status: 'En Tránsito',
@@ -70,24 +63,35 @@ class ProfileScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
 
-            // Operation Item 2: Sensor Calibration
+            // Shop Process 2: Purchase Order
             _OperationTile(
-              icon: Icons.sensors,
-              title: 'Calibración de Sondas IoT',
-              subtitle: '18 Sondas activas • Humedad 68% • pH 6.4',
-              status: 'Calibrado',
+              icon: Icons.receipt_long_outlined,
+              title: 'Orden de Compra #ORD-9924',
+              subtitle: 'Tomate San Marzano • Pago Confirmado en Tienda',
+              status: 'En Preparación',
               statusColor: AppColors.primaryContainer,
               onTap: () {},
             ),
             const SizedBox(height: 8),
 
-            // Operation Item 3: ISTA Seed Certificate
+            // Certification 1: ISTA Seed Certificate
             _OperationTile(
-              icon: Icons.workspace_premium,
+              icon: Icons.workspace_premium_outlined,
               title: 'Certificación ISTA Lote #SM-2025',
               subtitle: 'Germinación 98.4% verificada en laboratorio',
               status: 'Aprobado',
-              statusColor: AppColors.tertiaryFixedDim,
+              statusColor: AppColors.secondary,
+              onTap: () {},
+            ),
+            const SizedBox(height: 8),
+
+            // Certification 2: Phytosanitary Certificate
+            _OperationTile(
+              icon: Icons.verified_user_outlined,
+              title: 'Certificado Fitosanitario SENASA',
+              subtitle: 'Lote libre de patógenos y plagas cuarentenarias',
+              status: 'Vigente',
+              statusColor: AppColors.secondaryAccent,
               onTap: () {},
             ),
             const SizedBox(height: 24),
@@ -110,31 +114,36 @@ class ProfileScreen extends ConsumerWidget {
               child: Column(
                 children: [
                   _PreferenceRow(
-                    icon: Icons.notifications_active,
+                    icon: Icons.notifications_active_outlined,
                     title: 'Alertas Agro-Climáticas',
                     trailing: Switch.adaptive(
                       value: true,
-                      activeColor: AppColors.secondary,
+                      activeTrackColor: AppColors.secondary,
                       onChanged: (val) {},
                     ),
                   ),
                   const Divider(height: 1, color: Color(0x1A114036)),
                   _PreferenceRow(
-                    icon: Icons.cloud_sync,
-                    title: 'Sincronización Estación Meteorológica',
-                    trailing: const Icon(Icons.chevron_right, color: AppColors.onSurfaceVariant),
-                    onTap: () {},
+                    icon: isDark ? Icons.dark_mode : Icons.dark_mode_outlined,
+                    title: 'Modo Oscuro',
+                    trailing: Switch.adaptive(
+                      value: isDark,
+                      activeTrackColor: AppColors.secondary,
+                      onChanged: (val) {
+                        ref.read(isDarkModeProvider.notifier).state = val;
+                      },
+                    ),
                   ),
                   const Divider(height: 1, color: Color(0x1A114036)),
                   _PreferenceRow(
-                    icon: Icons.security,
+                    icon: Icons.security_outlined,
                     title: 'Credenciales y Certificados Botánicos',
                     trailing: const Icon(Icons.chevron_right, color: AppColors.onSurfaceVariant),
                     onTap: () {},
                   ),
                   const Divider(height: 1, color: Color(0x1A114036)),
                   _PreferenceRow(
-                    icon: Icons.logout,
+                    icon: Icons.logout_outlined,
                     title: 'Cerrar Sesión',
                     titleColor: AppColors.error,
                     iconColor: AppColors.error,
@@ -215,6 +224,7 @@ class _OperationTile extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
@@ -263,19 +273,25 @@ class _PreferenceRow extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                Icon(icon, size: 20, color: iconColor ?? AppColors.primary),
-                const SizedBox(width: 12),
-                Text(
-                  title,
-                  style: AppTypography.bodyMd.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: titleColor ?? AppColors.onSurface,
+            Expanded(
+              child: Row(
+                children: [
+                  Icon(icon, size: 20, color: iconColor ?? AppColors.primary),
+                  const SizedBox(width: 12),
+                  Flexible(
+                    child: Text(
+                      title,
+                      style: AppTypography.bodyMd.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: titleColor ?? AppColors.onSurface,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
+            const SizedBox(width: 8),
             trailing,
           ],
         ),

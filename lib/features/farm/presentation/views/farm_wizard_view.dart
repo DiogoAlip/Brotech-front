@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_typography.dart';
 import '../controllers/farm_controller.dart';
 import '../widgets/wizard/wizard_crop_step.dart';
 import '../widgets/wizard/wizard_date_step.dart';

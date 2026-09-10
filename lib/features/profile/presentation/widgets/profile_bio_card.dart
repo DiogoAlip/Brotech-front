@@ -1,15 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../domain/models/agronomist_profile.dart';
+import '../controllers/profile_controller.dart';
 
-class ProfileBioCard extends StatelessWidget {
+class ProfileBioCard extends ConsumerWidget {
   final AgronomistProfile profile;
+  final ValueChanged<String>? onStatusChanged;
 
-  const ProfileBioCard({super.key, required this.profile});
+  const ProfileBioCard({
+    super.key,
+    required this.profile,
+    this.onStatusChanged,
+  });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isInactive = profile.status.toLowerCase() == 'inactivo';
+    final statusColor = isInactive ? const Color(0xFF78716C) : AppColors.secondary;
+    final statusBgColor = isInactive
+        ? const Color(0xFF78716C).withValues(alpha: 0.1)
+        : AppColors.secondary.withValues(alpha: 0.1);
+    final statusBorderColor = isInactive
+        ? const Color(0xFF78716C).withValues(alpha: 0.25)
+        : AppColors.secondary.withValues(alpha: 0.25);
+
     return Container(
       decoration: BoxDecoration(
         color: AppColors.surfaceContainerLowest,
@@ -76,25 +92,99 @@ class ProfileBioCard extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                profile.name,
-                                style: AppTypography.headlineSm.copyWith(
-                                  fontWeight: FontWeight.w700,
+                              Expanded(
+                                child: Text(
+                                  profile.name,
+                                  style: AppTypography.headlineSm.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
+                              const SizedBox(width: 8),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
                                 decoration: BoxDecoration(
-                                  color: AppColors.secondary.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(4),
-                                  border: Border.all(color: AppColors.secondary.withValues(alpha: 0.2)),
+                                  color: statusBgColor,
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(color: statusBorderColor),
                                 ),
-                                child: Text(
-                                  profile.status,
-                                  style: AppTypography.labelSm.copyWith(
-                                    color: AppColors.secondary,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 9.5,
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    key: const ValueKey('profile_status_dropdown'),
+                                    value: isInactive ? 'Inactivo' : 'Activo',
+                                    isDense: true,
+                                    icon: Padding(
+                                      padding: const EdgeInsets.only(left: 2),
+                                      child: Icon(
+                                        Icons.keyboard_arrow_down,
+                                        size: 15,
+                                        color: statusColor,
+                                      ),
+                                    ),
+                                    dropdownColor: Theme.of(context).cardColor,
+                                    borderRadius: BorderRadius.circular(8),
+                                    items: [
+                                      DropdownMenuItem(
+                                        value: 'Activo',
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Container(
+                                              width: 6,
+                                              height: 6,
+                                              decoration: const BoxDecoration(
+                                                color: AppColors.secondary,
+                                                shape: BoxShape.circle,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 5),
+                                            Text(
+                                              'Activo',
+                                              style: AppTypography.labelSm.copyWith(
+                                                color: AppColors.secondary,
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 10.5,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      DropdownMenuItem(
+                                        value: 'Inactivo',
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Container(
+                                              width: 6,
+                                              height: 6,
+                                              decoration: const BoxDecoration(
+                                                color: Color(0xFF78716C),
+                                                shape: BoxShape.circle,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 5),
+                                            Text(
+                                              'Inactivo',
+                                              style: AppTypography.labelSm.copyWith(
+                                                color: const Color(0xFF78716C),
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 10.5,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                    onChanged: (val) {
+                                      if (val != null) {
+                                        if (onStatusChanged != null) {
+                                          onStatusChanged!(val);
+                                        } else {
+                                          ref.read(profileControllerProvider.notifier).updateStatus(val);
+                                        }
+                                      }
+                                    },
                                   ),
                                 ),
                               ),
@@ -109,24 +199,31 @@ class ProfileBioCard extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 6),
-                          Row(
+                          Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            spacing: 6,
+                            runSpacing: 4,
                             children: [
-                              const Icon(Icons.pin_drop, size: 14, color: AppColors.primary),
-                              const SizedBox(width: 4),
-                              Text(
-                                profile.farmName,
-                                style: AppTypography.bodySm.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.primary,
-                                ),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.pin_drop, size: 14, color: AppColors.primary),
+                                  const SizedBox(width: 4),
+                                  Flexible(
+                                    child: Text(
+                                      profile.farmName,
+                                      style: AppTypography.bodySm.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.primary,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(width: 6),
                               const Text('•', style: TextStyle(color: AppColors.onSurfaceVariant)),
-                              const SizedBox(width: 6),
                               Text(profile.zone, style: AppTypography.bodySm.copyWith(fontSize: 11)),
-                              const SizedBox(width: 6),
                               const Text('•', style: TextStyle(color: AppColors.onSurfaceVariant)),
-                              const SizedBox(width: 6),
                               Text('${profile.hectares.toStringAsFixed(0)} Ha', style: AppTypography.bodySm.copyWith(fontSize: 11)),
                             ],
                           ),
@@ -135,77 +232,7 @@ class ProfileBioCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-                const Divider(height: 1, color: Color(0x1A114036)),
-                const SizedBox(height: 12),
-
-                // Trust Badges / Verification Ribbons
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    _Ribbon(
-                      icon: Icons.eco,
-                      label: 'Productor Orgánico Certificado',
-                      bgColor: const Color(0x3378F9D1),
-                      iconColor: AppColors.secondary,
-                    ),
-                    _Ribbon(
-                      icon: Icons.workspace_premium,
-                      label: 'Garantía Botánica ISTA',
-                      bgColor: const Color(0x33FDBB42),
-                      iconColor: AppColors.tertiaryFixedDim,
-                    ),
-                    _Ribbon(
-                      icon: Icons.biotech,
-                      label: profile.labId,
-                      bgColor: AppColors.surfaceContainer,
-                      iconColor: AppColors.primary,
-                    ),
-                  ],
-                ),
               ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Ribbon extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Color bgColor;
-  final Color iconColor;
-
-  const _Ribbon({
-    required this.icon,
-    required this.label,
-    required this.bgColor,
-    required this.iconColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.1)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: iconColor),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: AppTypography.labelSm.copyWith(
-              color: AppColors.primary,
-              fontWeight: FontWeight.w600,
-              fontSize: 10.5,
             ),
           ),
         ],
